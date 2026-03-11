@@ -6,7 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 4173"
+    "preview": "vite preview --host 0.0.0.0 --port 4184",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "preview:start": "bash scripts/start-preview.sh",
+    "preview:stop": "bash scripts/stop-preview.sh",
+    "preview:status": "bash scripts/status-preview.sh",
+    "deploy:public": "bash scripts/start-public-preview.sh",
+    "deploy:public:stop": "bash scripts/stop-public-preview.sh",
+    "deploy:public:status": "bash scripts/status-public-preview.sh"
   },
   "dependencies": {
     "react": "^18.3.1",

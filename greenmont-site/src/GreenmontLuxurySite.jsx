@@ -4,8 +4,15 @@ import MediaPanel from "./components/MediaPanel";
 import ModeSwitchers from "./components/ModeSwitchers";
 import SectionHeader from "./components/SectionHeader";
 import SmartImage from "./components/SmartImage";
+import SmartVideo from "./components/SmartVideo";
 import StorySection from "./components/StorySection";
-import { APARTMENT_ASSETS, GALLERY_ASSETS, HERO_ASSETS, STORY_ASSETS } from "./data/assets";
+import {
+  APARTMENT_ASSETS,
+  GALLERY_ASSETS,
+  HERO_ASSETS,
+  STORY_ASSETS,
+  VIDEO_ASSETS
+} from "./data/assets";
 import { FORMATS } from "./data/formats";
 import { APARTMENTS, GALLERY_BLOCKS, METRICS, STORY_SECTIONS } from "./data/content";
 import { THEMES } from "./data/themes";
@@ -49,13 +56,12 @@ export default function GreenmontLuxurySite() {
 
       <section className="hero">
         <div className="hero-media-wrap">
-          <SmartImage
-            src={HERO_ASSETS[0]}
+          <SmartVideo
+            src={VIDEO_ASSETS.hero}
+            poster={HERO_ASSETS[0]}
             alt="Резиденция Greenmont"
             className="hero-media"
             fallbackLabel="Greenmont"
-            loading="eager"
-            fetchPriority="high"
           />
           <div className="hero-overlay" />
         </div>
@@ -144,6 +150,8 @@ export default function GreenmontLuxurySite() {
             <article key={block.title} className="gallery-item">
               <MediaPanel
                 src={GALLERY_ASSETS[index]}
+                videoSrc={index === 0 ? VIDEO_ASSETS.gallery : undefined}
+                posterSrc={GALLERY_ASSETS[index]}
                 alt={block.title}
                 label={`Галерея ${index + 1}`}
               />

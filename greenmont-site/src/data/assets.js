@@ -32,3 +32,8 @@ export const APARTMENT_ASSETS = apartmentExt.map((ext, index) =>
 export const GALLERY_ASSETS = galleryExt.map((ext, index) =>
   toPath("gallery", `gallery-${String(index + 1).padStart(2, "0")}`, ext)
 );
+
+export const VIDEO_ASSETS = {
+  hero: toPath("video", "hero-loop", "mp4"),
+  gallery: toPath("video", "gallery-loop", "mp4")
+};
