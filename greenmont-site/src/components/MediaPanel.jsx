@@ -1,6 +1,7 @@
+import { memo } from "react";
 import SmartImage from "./SmartImage";
 
-export default function MediaPanel({ src, alt, label }) {
+const MediaPanel = memo(function MediaPanel({ src, alt, label }) {
   return (
     <div className="media-panel">
       <SmartImage
@@ -12,4 +13,6 @@ export default function MediaPanel({ src, alt, label }) {
       <div className="media-panel-glow" />
     </div>
   );
-}
+});
+
+export default MediaPanel;

@@ -1,6 +1,7 @@
+import { memo } from "react";
 import SmartImage from "./SmartImage";
 
-export default function ApartmentCard({ apartment, image }) {
+const ApartmentCard = memo(function ApartmentCard({ apartment, image }) {
   return (
     <article className="apartment-card">
       <div className="apartment-media">
@@ -36,4 +37,6 @@ export default function ApartmentCard({ apartment, image }) {
       </div>
     </article>
   );
-}
+});
+
+export default ApartmentCard;

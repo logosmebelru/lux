@@ -1,31 +1,44 @@
-import { useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
+import { buildAssetCandidateChain } from "../utils/mediaFallbacks";
 
-export default function SmartImage({
+const SmartImage = memo(function SmartImage({
   src,
   alt,
   className,
   fallbackLabel,
   loading = "lazy",
-  decoding = "async"
+  decoding = "async",
+  fetchPriority = "auto"
 }) {
-  const [failed, setFailed] = useState(false);
+  const candidates = useMemo(() => buildAssetCandidateChain(src), [src]);
+  const [candidateIndex, setCandidateIndex] = useState(0);
 
-  if (!src || failed) {
+  useEffect(() => {
+    setCandidateIndex(0);
+  }, [src]);
+
+  const activeSrc = candidates[candidateIndex];
+
+  if (!activeSrc) {
     return (
       <div className={`image-fallback ${className || ""}`}>
-        <span>{fallbackLabel || "Greenmont Luxury"}</span>
+        <span>{fallbackLabel || "Greenmont"}</span>
       </div>
     );
   }
 
   return (
     <img
-      src={src}
+      src={activeSrc}
       alt={alt}
       className={className}
       loading={loading}
       decoding={decoding}
-      onError={() => setFailed(true)}
+      fetchPriority={fetchPriority}
+      draggable={false}
+      onError={() => setCandidateIndex((index) => index + 1)}
     />
   );
-}
+});
+
+export default SmartImage;

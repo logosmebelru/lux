@@ -1,6 +1,7 @@
+import { memo } from "react";
 import MediaPanel from "./MediaPanel";
 
-export default function StorySection({ section, image, reversed }) {
+const StorySection = memo(function StorySection({ section, image, reversed }) {
   return (
     <article className={`story-section ${reversed ? "reversed" : ""}`}>
       <div className="story-content">
@@ -12,9 +13,11 @@ export default function StorySection({ section, image, reversed }) {
       </div>
       <MediaPanel
         src={image}
-        alt={`Greenmont story ${section.index}`}
+        alt={`Секция истории Greenmont ${section.index}`}
         label={`Секция ${section.index}`}
       />
     </article>
   );
-}
+});
+
+export default StorySection;
