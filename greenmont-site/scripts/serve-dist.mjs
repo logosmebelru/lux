@@ -34,16 +34,97 @@ if (!existsSync(indexHtmlPath)) {
 
 const indexHtml = readFileSync(indexHtmlPath);
 
-function sendFile(response, filePath) {
+function parseRange(rangeHeader, size) {
+  if (!rangeHeader || !rangeHeader.startsWith("bytes=")) {
+    return null;
+  }
+
+  const [startToken, endToken] = rangeHeader.slice("bytes=".length).split(",", 1)[0].split("-");
+  let start = startToken === "" ? null : Number.parseInt(startToken, 10);
+  let end = endToken === "" ? null : Number.parseInt(endToken, 10);
+
+  if ((start !== null && Number.isNaN(start)) || (end !== null && Number.isNaN(end))) {
+    return "invalid";
+  }
+
+  if (start === null && end === null) {
+    return "invalid";
+  }
+
+  if (start === null) {
+    const suffixLength = end;
+    if (!suffixLength || suffixLength <= 0) {
+      return "invalid";
+    }
+
+    start = Math.max(size - suffixLength, 0);
+    end = size - 1;
+  } else {
+    if (start >= size || start < 0) {
+      return "invalid";
+    }
+
+    if (end === null || end >= size) {
+      end = size - 1;
+    }
+  }
+
+  if (end < start) {
+    return "invalid";
+  }
+
+  return { start, end };
+}
+
+function sendFile(request, response, filePath) {
   const extension = extname(filePath);
   const contentType = mimeTypes[extension] ?? "application/octet-stream";
   const stats = statSync(filePath);
+  const cacheControl = extension === ".html" ? "no-cache" : "public, max-age=31536000, immutable";
+  const range = parseRange(request.headers.range, stats.size);
+
+  if (range === "invalid") {
+    response.writeHead(416, {
+      "Accept-Ranges": "bytes",
+      "Cache-Control": cacheControl,
+      "Content-Range": `bytes */${stats.size}`,
+      "Content-Type": contentType
+    });
+    response.end();
+    return;
+  }
+
+  if (range) {
+    const contentLength = range.end - range.start + 1;
+
+    response.writeHead(206, {
+      "Accept-Ranges": "bytes",
+      "Cache-Control": cacheControl,
+      "Content-Length": contentLength,
+      "Content-Range": `bytes ${range.start}-${range.end}/${stats.size}`,
+      "Content-Type": contentType
+    });
+
+    if (request.method === "HEAD") {
+      response.end();
+      return;
+    }
+
+    createReadStream(filePath, { start: range.start, end: range.end }).pipe(response);
+    return;
+  }
 
   response.writeHead(200, {
-    "Cache-Control": extension === ".html" ? "no-cache" : "public, max-age=31536000, immutable",
+    "Accept-Ranges": "bytes",
+    "Cache-Control": cacheControl,
     "Content-Length": stats.size,
     "Content-Type": contentType
   });
+
+  if (request.method === "HEAD") {
+    response.end();
+    return;
+  }
 
   createReadStream(filePath).pipe(response);
 }
@@ -67,7 +148,7 @@ const server = createServer((request, response) => {
   const isSafePath = candidatePath.startsWith(distDir);
 
   if (isSafePath && existsSync(candidatePath) && statSync(candidatePath).isFile()) {
-    sendFile(response, candidatePath);
+    sendFile(request, response, candidatePath);
     return;
   }
 

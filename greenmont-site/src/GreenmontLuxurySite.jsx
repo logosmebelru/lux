@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   APARTMENT_ASSETS as APARTMENT_MEDIA,
   GALLERY_ASSETS,
@@ -370,8 +370,8 @@ const VISUAL_FORMATS = [
     id: "cinematic",
     name: "Кинематографичный",
     description: "Крупные media-блоки, больше воздуха и сильный параллакс.",
-    heroMinHeight: "100vh",
-    sectionMediaHeight: "min-h-[72vh]",
+    heroMinHeight: "min-h-[34rem] sm:min-h-[42rem] lg:min-h-screen",
+    sectionMediaHeight: "min-h-[20rem] sm:min-h-[28rem] lg:min-h-[72vh]",
     compact: false,
     maxTextWidth: "max-w-3xl",
     storyCols: "lg:grid-cols-[0.94fr_1.06fr]",
@@ -383,8 +383,8 @@ const VISUAL_FORMATS = [
     id: "editorial",
     name: "Редакционный",
     description: "Больше акцента на типографике, цитатах и спокойной editorial-подаче.",
-    heroMinHeight: "92vh",
-    sectionMediaHeight: "min-h-[60vh]",
+    heroMinHeight: "min-h-[32rem] sm:min-h-[40rem] lg:min-h-[92vh]",
+    sectionMediaHeight: "min-h-[19rem] sm:min-h-[25rem] lg:min-h-[60vh]",
     compact: false,
     maxTextWidth: "max-w-2xl",
     storyCols: "lg:grid-cols-[1fr_1fr]",
@@ -396,8 +396,8 @@ const VISUAL_FORMATS = [
     id: "gallery",
     name: "Галерейный",
     description: "Фото-доминантный режим с более широкими визуальными блоками и короткими подписями.",
-    heroMinHeight: "96vh",
-    sectionMediaHeight: "min-h-[78vh]",
+    heroMinHeight: "min-h-[34rem] sm:min-h-[42rem] lg:min-h-[96vh]",
+    sectionMediaHeight: "min-h-[21rem] sm:min-h-[30rem] lg:min-h-[78vh]",
     compact: true,
     maxTextWidth: "max-w-xl",
     storyCols: "lg:grid-cols-[0.84fr_1.16fr]",
@@ -409,8 +409,8 @@ const VISUAL_FORMATS = [
     id: "catalog",
     name: "Каталожный",
     description: "Более структурированная подача со спецификациями и ровным темпом контента.",
-    heroMinHeight: "88vh",
-    sectionMediaHeight: "min-h-[54vh]",
+    heroMinHeight: "min-h-[31rem] sm:min-h-[38rem] lg:min-h-[88vh]",
+    sectionMediaHeight: "min-h-[18rem] sm:min-h-[24rem] lg:min-h-[54vh]",
     compact: true,
     maxTextWidth: "max-w-3xl",
     storyCols: "lg:grid-cols-[1.02fr_0.98fr]",
@@ -562,6 +562,7 @@ function MediaFill({
 }) {
   const imageAsset = useAssetSource(imageSrc);
   const posterAsset = useAssetSource(posterSrc || imageSrc);
+  const videoRef = useRef(null);
   const [isVideoAvailable, setIsVideoAvailable] = useState(Boolean(videoSrc));
 
   useEffect(() => {
@@ -575,18 +576,50 @@ function MediaFill({
     willChange: transform ? "transform" : undefined
   };
 
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement || !videoSrc || !isVideoAvailable || preferStaticMedia) {
+      return undefined;
+    }
+
+    videoElement.muted = true;
+    videoElement.defaultMuted = true;
+    videoElement.setAttribute("muted", "");
+    videoElement.setAttribute("playsinline", "");
+    videoElement.setAttribute("webkit-playsinline", "true");
+
+    const attemptPlayback = async () => {
+      try {
+        await videoElement.play();
+      } catch {
+        // Keep the poster visible if autoplay is blocked or delayed.
+      }
+    };
+
+    attemptPlayback();
+    videoElement.addEventListener("canplay", attemptPlayback);
+
+    return () => {
+      videoElement.removeEventListener("canplay", attemptPlayback);
+    };
+  }, [videoSrc, isVideoAvailable, preferStaticMedia]);
+
   return (
     <>
       <div className={containerClassName} style={{ background: gradient, ...layerStyle }} />
       {videoSrc && isVideoAvailable && !preferStaticMedia ? (
         <video
+          ref={videoRef}
           className={`${containerClassName} ${mediaClassName}`.trim()}
           poster={posterAsset.src || undefined}
           autoPlay
+          controls={false}
+          defaultMuted
+          disablePictureInPicture
           loop
           muted
           playsInline
-          preload="metadata"
+          preload={priority ? "auto" : "metadata"}
           aria-hidden="true"
           style={layerStyle}
           onError={() => setIsVideoAvailable(false)}
@@ -711,7 +744,7 @@ function ParallaxPanel({
   videoSrc,
   preferStaticMedia
 }) {
-  const motionTransform = `translate3d(0, ${scrollY * speed * format.parallaxBoost}px, 0) scale(${format.mediaEmphasis})`;
+  const motionTransform = `scale(${1 + (format.mediaEmphasis - 1) * 0.35})`;
 
   return (
     <div className={`relative overflow-hidden rounded-[2.3rem] border ${height}`} style={{ borderColor: theme.border }}>
@@ -721,43 +754,17 @@ function ParallaxPanel({
         posterSrc={asset}
         gradient={item.gradient}
         transform={motionTransform}
-        containerClassName="absolute inset-[-10%]"
+        containerClassName="absolute inset-0"
+        mediaClassName="h-full w-full object-cover object-center"
         preferStaticMedia={preferStaticMedia}
       />
       <div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 28%), linear-gradient(180deg, transparent, ${theme.panel})`
+          background:
+            "radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 32%), linear-gradient(180deg, rgba(0,0,0,0.04), transparent 45%, rgba(0,0,0,0.16))"
         }}
       />
-      <div className="relative z-10 flex h-full flex-col justify-end p-6 md:p-8 lg:p-10">
-        <div className="max-w-3xl rounded-[1.8rem] border p-6 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
-          <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-            визуальный акцент
-          </div>
-          <div
-            className="mt-3 text-[2rem] leading-[0.96] md:text-[2.7rem]"
-            style={{
-              fontFamily: theme.headingFont,
-              letterSpacing: theme.headingSpacing,
-              color: theme.text,
-              fontStyle: theme.headingStyle,
-              fontWeight: 400
-            }}
-          >
-            {item.mediaTitle}
-          </div>
-          <p className="mt-4 max-w-2xl text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-            {format.id === "editorial"
-              ? "В редакционном режиме этот блок подчеркивает типографику и паузы между визуалом и смыслом."
-              : format.id === "gallery"
-                ? "В галерейном режиме медиа становится главным носителем впечатления, а текст работает как подпись к кадру."
-                : format.id === "catalog"
-                  ? "В каталожном режиме этот визуал поддерживает спецификации и помогает структурировать выбор."
-                  : "Каждый экран работает как отдельный кадр большого luxury-фильма о проекте."}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
