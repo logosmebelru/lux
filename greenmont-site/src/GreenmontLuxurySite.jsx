@@ -696,6 +696,135 @@ function FormatChip({ theme, format, active, onClick }) {
   );
 }
 
+function SettingsDrawer({
+  isOpen,
+  onClose,
+  theme,
+  format,
+  themeId,
+  formatId,
+  onThemeChange,
+  onFormatChange
+}) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-[70]">
+      <button
+        type="button"
+        aria-label="Закрыть меню настроек"
+        onClick={onClose}
+        className="absolute inset-0"
+        style={{ backgroundColor: "rgba(4, 6, 8, 0.58)" }}
+      />
+      <aside
+        id="settings-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Настройки вида сайта"
+        className="absolute inset-y-0 right-0 flex h-full w-[92vw] max-w-[38rem] flex-col border-l shadow-[0_30px_120px_rgba(0,0,0,0.34)]"
+        style={{
+          borderColor: theme.border,
+          background: `linear-gradient(180deg, ${theme.backgroundAlt} 0%, ${theme.background} 100%)`,
+          color: theme.text
+        }}
+      >
+        <div
+          className="flex items-start justify-between gap-6 border-b px-5 py-5 md:px-7"
+          style={{ borderColor: theme.border, background: theme.header, backdropFilter: "blur(18px)" }}
+        >
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              Настройки вида
+            </div>
+            <div
+              className="mt-2 text-[1.85rem] leading-[0.98]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              Цветовая схема и визуальный формат
+            </div>
+            <p className="mt-3 max-w-md text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              Переключайте подачу истории без смены narrative-scroll: палитра, ритм текста и характер визуальной композиции обновляются сразу.
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-label="Закрыть"
+            onClick={onClose}
+            className="rounded-full border px-4 py-2 text-[11px] uppercase transition"
+            style={{
+              borderColor: theme.border,
+              background: theme.surface,
+              color: theme.muted,
+              letterSpacing: "0.24em"
+            }}
+          >
+            Закрыть
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-5 md:px-7 md:py-6">
+          <section className="rounded-[2rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              Выбор цветовой схемы
+            </div>
+            <div
+              className="mt-3 text-[1.7rem] leading-[1]"
+              style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, fontStyle: theme.headingStyle }}
+            >
+              10 цветовых схем, и у каждой — своя стилистика текста
+            </div>
+            <p className="mt-3 text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              Меняются палитра, акцент, контраст, шрифтовая пара, характер заголовков, межбуквенный ритм и общая эмоциональная тональность текста.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {THEMES.map((item) => (
+                <ThemeChip key={item.id} theme={item} active={item.id === themeId} onClick={() => onThemeChange(item.id)} />
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-5 rounded-[2rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              Выбор визуального формата
+            </div>
+            <div
+              className="mt-3 text-[1.7rem] leading-[1]"
+              style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, fontStyle: theme.headingStyle }}
+            >
+              Несколько визуальных форматов для одной и той же истории
+            </div>
+            <p className="mt-3 text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              Можно переключать способ подачи: более кинематографично, более редакционно, более галерейно или более структурно-каталожно, не ломая сам narrative-scroll и общую luxury-композицию.
+            </p>
+            <div className="mt-5 grid gap-3">
+              {VISUAL_FORMATS.map((item) => (
+                <FormatChip
+                  key={item.id}
+                  theme={theme}
+                  format={item}
+                  active={item.id === formatId}
+                  onClick={() => onFormatChange(item.id)}
+                />
+              ))}
+            </div>
+            <div className="mt-5 rounded-[1.6rem] border p-4 text-sm leading-7" style={{ borderColor: theme.border, background: theme.panel, color: theme.muted }}>
+              Активно сейчас: <span style={{ color: theme.text }}>{format.name}</span>.
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
 function StoryHeader({ item, theme, format }) {
   return (
     <div className={format.maxTextWidth}>
@@ -1002,6 +1131,7 @@ export default function GreenmontLuxurySite() {
   const scrollY = prefersReducedMotion ? 0 : rawScrollY;
   const [themeId, setThemeId] = useState(THEMES[0].id);
   const [formatId, setFormatId] = useState(VISUAL_FORMATS[0].id);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const theme = useMemo(() => THEMES.find((item) => item.id === themeId) || THEMES[0], [themeId]);
   const format = useMemo(() => VISUAL_FORMATS.find((item) => item.id === formatId) || VISUAL_FORMATS[0], [formatId]);
@@ -1019,6 +1149,42 @@ export default function GreenmontLuxurySite() {
     ],
     []
   );
+
+  useEffect(() => {
+    if (!isSettingsOpen) {
+      return undefined;
+    }
+
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = documentElement.style.overflow;
+
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [isSettingsOpen]);
+
+  useEffect(() => {
+    if (!isSettingsOpen) {
+      return undefined;
+    }
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isSettingsOpen]);
 
   return (
     <div
@@ -1044,6 +1210,17 @@ export default function GreenmontLuxurySite() {
         style={{
           background: `radial-gradient(circle at top, ${theme.accentSoft}, transparent 22%), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.05), transparent 18%)`
         }}
+      />
+
+      <SettingsDrawer
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        theme={theme}
+        format={format}
+        themeId={themeId}
+        formatId={formatId}
+        onThemeChange={setThemeId}
+        onFormatChange={setFormatId}
       />
 
       <header className="sticky top-0 z-50 border-b backdrop-blur-2xl" style={{ borderColor: theme.border, background: theme.header }}>
@@ -1075,44 +1252,6 @@ export default function GreenmontLuxurySite() {
           </nav>
         </div>
       </header>
-
-      <section className="border-b py-8" style={{ borderColor: theme.border, backgroundColor: theme.backgroundAlt }}>
-        <div className="mx-auto grid max-w-[1600px] gap-6 px-6 lg:grid-cols-[1fr_1fr] lg:px-10">
-          <div className="rounded-[2rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
-            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-              Выбор цветовой схемы
-            </div>
-            <div className="mt-3 text-[1.7rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, fontStyle: theme.headingStyle }}>
-              10 цветовых схем, и у каждой — своя стилистика текста
-            </div>
-            <p className="mt-3 text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-              Меняются палитра, акцент, контраст, шрифтовая пара, характер заголовков, межбуквенный ритм и общая эмоциональная тональность текста.
-            </p>
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-              {THEMES.map((item) => (
-                <ThemeChip key={item.id} theme={item} active={item.id === theme.id} onClick={() => setThemeId(item.id)} />
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
-            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-              Выбор визуального формата
-            </div>
-            <div className="mt-3 text-[1.7rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, fontStyle: theme.headingStyle }}>
-              Несколько визуальных форматов для одной и той же истории
-            </div>
-            <p className="mt-3 text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-              Можно переключать способ подачи: более кинематографично, более редакционно, более галерейно или более структурно-каталожно, не ломая сам narrative-scroll и общую luxury-композицию.
-            </p>
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-              {VISUAL_FORMATS.map((item) => (
-                <FormatChip key={item.id} theme={theme} format={item} active={item.id === format.id} onClick={() => setFormatId(item.id)} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       <main>
         <section id="hero" className="relative overflow-hidden border-b" style={{ borderColor: theme.border, backgroundColor: theme.background }}>
@@ -1188,6 +1327,17 @@ export default function GreenmontLuxurySite() {
                   >
                     Запросить персональную презентацию
                   </a>
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-expanded={isSettingsOpen}
+                    aria-controls="settings-drawer"
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    style={{ borderColor: theme.border, background: theme.panel, color: theme.text }}
+                  >
+                    Настроить вид
+                  </button>
                 </div>
               </div>
 
