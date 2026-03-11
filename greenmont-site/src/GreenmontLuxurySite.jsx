@@ -920,9 +920,9 @@ function HeaderNavMenu({ isOpen, onClose, navItems, theme }) {
 
 function StoryHeader({ item, theme, format }) {
   return (
-    <div className={format.maxTextWidth}>
+    <div className={`${format.maxTextWidth} min-w-0 max-w-full`}>
       <div
-        className="flex items-center gap-4 text-[11px] uppercase"
+        className="flex flex-wrap items-center gap-4 text-[11px] uppercase"
         style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}
       >
         <span>{item.label}</span>
@@ -930,7 +930,7 @@ function StoryHeader({ item, theme, format }) {
         <span>{item.eyebrow}</span>
       </div>
       <h2
-        className="mt-5 text-[2.7rem] leading-[0.92] md:text-[4.1rem] xl:text-[5rem]"
+        className="mt-5 max-w-full text-[2.7rem] leading-[0.92] [overflow-wrap:anywhere] md:text-[4.1rem] xl:text-[5rem]"
         style={{
           fontFamily: theme.headingFont,
           letterSpacing: theme.headingSpacing,
@@ -942,13 +942,13 @@ function StoryHeader({ item, theme, format }) {
         {item.title}
       </h2>
       <div
-        className="mt-8 border-l pl-6 text-base leading-8"
+        className="mt-8 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]"
         style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}
       >
         {item.text}
       </div>
       <div
-        className="mt-7 inline-flex rounded-full border px-4 py-2 text-[12px] uppercase"
+        className="mt-7 inline-flex max-w-full flex-wrap rounded-full border px-4 py-2 text-[12px] uppercase leading-6 [overflow-wrap:anywhere]"
         style={{
           borderColor: theme.accent,
           background: theme.accentSoft,
@@ -1021,7 +1021,7 @@ function StorySection({ item, index, scrollY, theme, format, preferStaticMedia }
     >
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className={`grid items-start gap-10 ${format.storyCols} lg:gap-14 ${reverse ? "lg:grid-flow-col-dense" : ""}`}>
-          <div className={reverse ? "lg:order-2" : ""}>
+          <div className={`min-w-0 ${reverse ? "lg:order-2" : ""}`}>
             <StoryHeader item={item} theme={theme} format={format} />
             {format.id === "editorial" && (
               <div
@@ -1032,7 +1032,7 @@ function StorySection({ item, index, scrollY, theme, format, preferStaticMedia }
               </div>
             )}
           </div>
-          <div className={reverse ? "lg:order-1" : ""}>
+          <div className={`min-w-0 ${reverse ? "lg:order-1" : ""}`}>
             <ParallaxPanel
               scrollY={scrollY}
               speed={0.05 + (index % 4) * 0.02}
@@ -1088,7 +1088,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
     >
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className={`grid items-start gap-8 ${format.apartmentCols} lg:gap-12`}>
-          <div>
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
               <span>{item.number}</span>
               <span className="h-px w-16" style={{ backgroundColor: theme.accent }} />
@@ -1098,7 +1098,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
               </span>
             </div>
             <h3
-              className="mt-5 text-[2.4rem] leading-[0.94] md:text-[3.5rem] xl:text-[4.2rem]"
+              className="mt-5 max-w-full text-[2.4rem] leading-[0.94] [overflow-wrap:anywhere] md:text-[3.5rem] xl:text-[4.2rem]"
               style={{
                 fontFamily: theme.headingFont,
                 letterSpacing: theme.headingSpacing,
@@ -1109,14 +1109,14 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
             >
               {item.title}
             </h3>
-            <div className="mt-7 max-w-2xl border-l pl-6 text-base leading-8" style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
+            <div className="mt-7 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]" style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
               {item.text}
             </div>
             <div className={`mt-7 grid gap-3 ${format.id === "catalog" ? "sm:grid-cols-2" : "grid-cols-1"}`}>
               {specs.map((spec) => (
                 <div
                   key={spec.label}
-                  className="rounded-full border px-4 py-2 text-[12px] uppercase"
+                  className="max-w-full rounded-full border px-4 py-2 text-[12px] uppercase [overflow-wrap:anywhere]"
                   style={{
                     borderColor: theme.accent,
                     background: theme.accentSoft,
@@ -1170,7 +1170,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
             </div>
           </div>
           <div
-            className="overflow-hidden rounded-[2.2rem] border shadow-[0_20px_80px_rgba(0,0,0,0.24)]"
+            className="min-w-0 overflow-hidden rounded-[2.2rem] border shadow-[0_20px_80px_rgba(0,0,0,0.24)]"
             style={{
               borderColor: theme.border,
               background: theme.surfaceStrong,
@@ -1296,7 +1296,7 @@ export default function GreenmontLuxurySite() {
 
   return (
     <div
-      className="min-h-screen selection:bg-[#c6a66a] selection:text-[#111]"
+      className="min-h-screen overflow-x-clip selection:bg-[#c6a66a] selection:text-[#111]"
       style={{
         backgroundColor: theme.background,
         color: theme.text,
