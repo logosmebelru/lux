@@ -825,6 +825,73 @@ function SettingsDrawer({
   );
 }
 
+function HeaderNavMenu({ isOpen, onClose, navItems, theme }) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60]">
+      <button
+        type="button"
+        aria-label="Закрыть навигацию"
+        onClick={onClose}
+        className="absolute inset-0"
+        style={{ backgroundColor: "rgba(4, 6, 8, 0.34)" }}
+      />
+      <div
+        className="absolute left-6 right-6 top-[5.25rem] rounded-[2rem] border p-4 shadow-[0_30px_120px_rgba(0,0,0,0.28)] sm:left-auto sm:w-[24rem] lg:right-10"
+        style={{
+          borderColor: theme.border,
+          background: theme.header,
+          backdropFilter: "blur(22px)"
+        }}
+      >
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              Навигация
+            </div>
+            <div className="mt-1 text-sm" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              Быстрый переход по ключевым разделам
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border px-4 py-2 text-[11px] uppercase transition"
+            style={{
+              borderColor: theme.border,
+              background: theme.surface,
+              color: theme.muted,
+              letterSpacing: "0.24em"
+            }}
+          >
+            Закрыть
+          </button>
+        </div>
+        <nav className="grid gap-2">
+          {navItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={onClose}
+              className="rounded-[1.2rem] border px-4 py-3 text-sm transition"
+              style={{
+                borderColor: theme.border,
+                background: theme.surface,
+                color: theme.text
+              }}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+}
+
 function StoryHeader({ item, theme, format }) {
   return (
     <div className={format.maxTextWidth}>
@@ -1131,6 +1198,7 @@ export default function GreenmontLuxurySite() {
   const scrollY = prefersReducedMotion ? 0 : rawScrollY;
   const [themeId, setThemeId] = useState(THEMES[0].id);
   const [formatId, setFormatId] = useState(VISUAL_FORMATS[0].id);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const theme = useMemo(() => THEMES.find((item) => item.id === themeId) || THEMES[0], [themeId]);
@@ -1151,7 +1219,7 @@ export default function GreenmontLuxurySite() {
   );
 
   useEffect(() => {
-    if (!isSettingsOpen) {
+    if (!isSettingsOpen && !isNavOpen) {
       return undefined;
     }
 
@@ -1166,16 +1234,17 @@ export default function GreenmontLuxurySite() {
       body.style.overflow = previousBodyOverflow;
       documentElement.style.overflow = previousHtmlOverflow;
     };
-  }, [isSettingsOpen]);
+  }, [isNavOpen, isSettingsOpen]);
 
   useEffect(() => {
-    if (!isSettingsOpen) {
+    if (!isSettingsOpen && !isNavOpen) {
       return undefined;
     }
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
         setIsSettingsOpen(false);
+        setIsNavOpen(false);
       }
     };
 
@@ -1184,7 +1253,7 @@ export default function GreenmontLuxurySite() {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [isSettingsOpen]);
+  }, [isNavOpen, isSettingsOpen]);
 
   return (
     <div
@@ -1222,6 +1291,12 @@ export default function GreenmontLuxurySite() {
         onThemeChange={setThemeId}
         onFormatChange={setFormatId}
       />
+      <HeaderNavMenu
+        isOpen={isNavOpen}
+        onClose={() => setIsNavOpen(false)}
+        navItems={navItems}
+        theme={theme}
+      />
 
       <header className="sticky top-0 z-50 border-b backdrop-blur-2xl" style={{ borderColor: theme.border, background: theme.header }}>
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-5 lg:px-10">
@@ -1233,23 +1308,29 @@ export default function GreenmontLuxurySite() {
               One-page luxury story на 40+ экранов с 8 апартаментами в продаже
             </div>
           </div>
-          <nav className="hidden items-center gap-3 xl:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className="rounded-full border px-4 py-2 text-[11px] uppercase transition"
-                style={{
-                  borderColor: theme.border,
-                  background: theme.surface,
-                  color: theme.muted,
-                  letterSpacing: "0.24em"
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <button
+            type="button"
+            aria-label="Открыть меню"
+            aria-expanded={isNavOpen}
+            onClick={() => {
+              setIsSettingsOpen(false);
+              setIsNavOpen((current) => !current);
+            }}
+            className="flex items-center gap-3 rounded-full border px-4 py-3 text-[11px] uppercase transition"
+            style={{
+              borderColor: theme.border,
+              background: theme.surface,
+              color: theme.muted,
+              letterSpacing: "0.24em"
+            }}
+          >
+            <span className="flex h-3.5 w-4 flex-col justify-between">
+              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+            </span>
+            Меню
+          </button>
         </div>
       </header>
 
@@ -1332,7 +1413,10 @@ export default function GreenmontLuxurySite() {
                     aria-haspopup="dialog"
                     aria-expanded={isSettingsOpen}
                     aria-controls="settings-drawer"
-                    onClick={() => setIsSettingsOpen(true)}
+                    onClick={() => {
+                      setIsNavOpen(false);
+                      setIsSettingsOpen(true);
+                    }}
                     className="rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
                     style={{ borderColor: theme.border, background: theme.panel, color: theme.text }}
                   >
