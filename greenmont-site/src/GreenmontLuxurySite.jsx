@@ -538,6 +538,31 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+function useIsPhoneViewport() {
+  const [isPhoneViewport, setIsPhoneViewport] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const syncViewport = () => setIsPhoneViewport(mediaQuery.matches);
+
+    syncViewport();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncViewport);
+      return () => mediaQuery.removeEventListener("change", syncViewport);
+    }
+
+    mediaQuery.addListener(syncViewport);
+    return () => mediaQuery.removeListener(syncViewport);
+  }, []);
+
+  return isPhoneViewport;
+}
+
 function useAssetSource(src) {
   const candidates = useMemo(() => buildAssetCandidateChain(src), [src]);
   const [candidateIndex, setCandidateIndex] = useState(0);
@@ -1195,6 +1220,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
 export default function GreenmontLuxurySite() {
   const rawScrollY = useScrollY();
   const prefersReducedMotion = usePrefersReducedMotion();
+  const isPhoneViewport = useIsPhoneViewport();
   const scrollY = prefersReducedMotion ? 0 : rawScrollY;
   const [themeId, setThemeId] = useState(THEMES[0].id);
   const [formatId, setFormatId] = useState(VISUAL_FORMATS[0].id);
@@ -1217,6 +1243,14 @@ export default function GreenmontLuxurySite() {
     ],
     []
   );
+  const heroMediaTransform =
+    prefersReducedMotion || isPhoneViewport
+      ? undefined
+      : `translate3d(0, ${scrollY * 0.22 * format.parallaxBoost}px, 0) scale(${1.08 * format.mediaEmphasis})`;
+  const heroMediaContainerClassName = isPhoneViewport ? "absolute inset-0" : "absolute inset-[-10%]";
+  const heroMediaClassName = isPhoneViewport
+    ? "h-full w-full object-contain object-center"
+    : "h-full w-full object-cover object-center";
 
   useEffect(() => {
     if (!isSettingsOpen && !isNavOpen) {
@@ -1329,8 +1363,9 @@ export default function GreenmontLuxurySite() {
             videoSrc={VIDEO_ASSETS.hero}
             posterSrc={heroAsset}
             gradient={STORY_SECTIONS[0].gradient}
-            transform={`translate3d(0, ${scrollY * 0.22 * format.parallaxBoost}px, 0) scale(${1.08 * format.mediaEmphasis})`}
-            containerClassName="absolute inset-[-10%]"
+            transform={heroMediaTransform}
+            containerClassName={heroMediaContainerClassName}
+            mediaClassName={heroMediaClassName}
             priority
             preferStaticMedia={prefersReducedMotion}
           />
