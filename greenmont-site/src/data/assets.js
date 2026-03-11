@@ -34,6 +34,6 @@ export const GALLERY_ASSETS = galleryExt.map((ext, index) =>
 );
 
 export const VIDEO_ASSETS = {
-  hero: toPath("video", "hero-loop", "mp4"),
+  hero: toPath("video", "Flow_delpmaspu_-2", "mp4"),
   gallery: toPath("video", "gallery-loop", "mp4")
 };
