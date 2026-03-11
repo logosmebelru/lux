@@ -33,7 +33,11 @@ export const GALLERY_ASSETS = galleryExt.map((ext, index) =>
   toPath("gallery", `gallery-${String(index + 1).padStart(2, "0")}`, ext)
 );
 
+export const HERO_FEATURE_ASSETS = {
+  mobile: toPath("hero", "______4k_delpmaspu-5", "png")
+};
+
 export const VIDEO_ASSETS = {
-  hero: toPath("video", "Flow_delpmaspu_-2", "mp4"),
+  hero: toPath("video", "Luxury_seaside_complex_drone_reveal_delpmaspu_", "mp4"),
   gallery: toPath("video", "gallery-loop", "mp4")
 };

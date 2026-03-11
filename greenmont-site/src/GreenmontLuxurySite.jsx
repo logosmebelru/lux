@@ -3,6 +3,7 @@ import {
   APARTMENT_ASSETS as APARTMENT_MEDIA,
   GALLERY_ASSETS,
   HERO_ASSETS as HERO_MEDIA,
+  HERO_FEATURE_ASSETS,
   STORY_ASSETS as STORY_MEDIA,
   VIDEO_ASSETS
 } from "./data/assets";
@@ -1230,6 +1231,7 @@ export default function GreenmontLuxurySite() {
   const theme = useMemo(() => THEMES.find((item) => item.id === themeId) || THEMES[0], [themeId]);
   const format = useMemo(() => VISUAL_FORMATS.find((item) => item.id === formatId) || VISUAL_FORMATS[0], [formatId]);
   const heroAsset = useMemo(() => getHeroAsset(format.id), [format.id]);
+  const heroPhoneAsset = HERO_FEATURE_ASSETS.mobile || heroAsset;
   const navItems = useMemo(
     () => [
       { id: "hero", label: "Главная" },
@@ -1251,6 +1253,9 @@ export default function GreenmontLuxurySite() {
   const heroMediaClassName = isPhoneViewport
     ? "h-full w-full object-contain object-center"
     : "h-full w-full object-cover object-center";
+  const heroMediaImageSrc = isPhoneViewport ? heroPhoneAsset : heroAsset;
+  const heroMediaPosterSrc = isPhoneViewport ? heroPhoneAsset : heroAsset;
+  const heroMediaVideoSrc = isPhoneViewport ? undefined : VIDEO_ASSETS.hero;
 
   useEffect(() => {
     if (!isSettingsOpen && !isNavOpen) {
@@ -1359,9 +1364,9 @@ export default function GreenmontLuxurySite() {
       <main>
         <section id="hero" className="relative overflow-hidden border-b" style={{ borderColor: theme.border, backgroundColor: theme.background }}>
           <MediaFill
-            imageSrc={heroAsset}
-            videoSrc={VIDEO_ASSETS.hero}
-            posterSrc={heroAsset}
+            imageSrc={heroMediaImageSrc}
+            videoSrc={heroMediaVideoSrc}
+            posterSrc={heroMediaPosterSrc}
             gradient={STORY_SECTIONS[0].gradient}
             transform={heroMediaTransform}
             containerClassName={heroMediaContainerClassName}
