@@ -48,7 +48,7 @@ const makeApartment = (
 });
 
 const STORY_SECTIONS = [
-  makeSection("hero", "hero", "01", "Резиденции премиум-класса у моря", "Дорогие апартаменты у моря в Сочи", "Пространство для жизни, инвестиций и отдыха у побережья, собранное как единая luxury-история через фотографии, видео, архитектуру и ощущение private resort.", "Единая история проекта", "Фасад, море, вечерний свет и ощущение частной курортной резиденции", "linear-gradient(135deg, #4d6671 0%, #b89b6b 48%, #141516 100%)"),
+  makeSection("hero", "hero", "01", "Резиденции премиум-класса у моря", "Премиальные аппартаменты у моря в Сочи", "Пространство для жизни, инвестиций и отдыха у побережья, собранное как единая luxury-история через фотографии, видео, архитектуру и ощущение private resort.", "Единая история проекта", "Фасад, море, вечерний свет и ощущение частной курортной резиденции", "linear-gradient(135deg, #4d6671 0%, #b89b6b 48%, #141516 100%)"),
   makeSection("metrics", "stats", "02", "Ключевые масштабы проекта", "Большое благоустройство, закрытая территория и высокий процент видовых резиденций", "В основе истории — масштаб: 26 000 м² благоустройства, 1,3 га парящих променадов, 4,5 га закрытой территории, 2 175 м² собственного пляжа и высокий процент видовых резиденций.", "26 000 м² благоустройства", "Масштаб проекта раскрывается через ландшафт, воздух и протяженные маршруты к морю", "linear-gradient(135deg, #536975 0%, #c0a16e 52%, #151617 100%)"),
   makeSection("concept", "story", "03", "О проекте", "Флагманский курортный продукт с акцентом на приватность премиум-класса", "Референс подает проект как инвестиционный гостиничный комплекс 5* у моря, где единый архитектурный код сочетается с курортной частью Сочи и форматами для отдыха, инвестиций и долгого владения.", "private resort с гостиничным управлением", "Архитектурный код, приватность и курортная часть Сочи", "linear-gradient(135deg, #556a75 0%, #b79765 52%, #161718 100%)"),
   makeSection("private-resort", "story", "04", "Формат проекта", "Private resort с сервисом и профессиональным управлением", "Это не просто набор апартаментов, а формат private resort с гостиничным управлением и инфраструктурой уровня ведущих мировых курортов.", "5* гостиничный комплекс с резиденциями", "Жизнь у моря как сервисный и архитектурный сценарий", "linear-gradient(135deg, #425964 0%, #b89663 54%, #161718 100%)"),
@@ -840,7 +840,7 @@ function HeaderNavMenu({ isOpen, onClose, navItems, theme }) {
         style={{ backgroundColor: "rgba(4, 6, 8, 0.34)" }}
       />
       <div
-        className="absolute left-6 right-6 top-[5.25rem] rounded-[2rem] border p-4 shadow-[0_30px_120px_rgba(0,0,0,0.28)] sm:left-auto sm:w-[24rem] lg:right-10"
+        className="absolute left-4 right-4 top-20 rounded-[2rem] border p-4 shadow-[0_30px_120px_rgba(0,0,0,0.28)] sm:left-auto sm:right-6 sm:w-[24rem] lg:right-10 lg:top-24"
         style={{
           borderColor: theme.border,
           background: theme.header,
@@ -1298,41 +1298,29 @@ export default function GreenmontLuxurySite() {
         theme={theme}
       />
 
-      <header className="sticky top-0 z-50 border-b backdrop-blur-2xl" style={{ borderColor: theme.border, background: theme.header }}>
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-5 lg:px-10">
-          <div>
-            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-              Greenmont
-            </div>
-            <div className="mt-1 text-sm" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-              One-page luxury story на 40+ экранов с 8 апартаментами в продаже
-            </div>
-          </div>
-          <button
-            type="button"
-            aria-label="Открыть меню"
-            aria-expanded={isNavOpen}
-            onClick={() => {
-              setIsSettingsOpen(false);
-              setIsNavOpen((current) => !current);
-            }}
-            className="flex items-center gap-3 rounded-full border px-4 py-3 text-[11px] uppercase transition"
-            style={{
-              borderColor: theme.border,
-              background: theme.surface,
-              color: theme.muted,
-              letterSpacing: "0.24em"
-            }}
-          >
-            <span className="flex h-3.5 w-4 flex-col justify-between">
-              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
-              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
-              <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
-            </span>
-            Меню
-          </button>
-        </div>
-      </header>
+      <button
+        type="button"
+        aria-label="Открыть меню"
+        aria-expanded={isNavOpen}
+        onClick={() => {
+          setIsSettingsOpen(false);
+          setIsNavOpen((current) => !current);
+        }}
+        className="fixed right-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border transition sm:right-6 sm:top-6"
+        style={{
+          borderColor: theme.border,
+          background: theme.header,
+          color: theme.text,
+          backdropFilter: "blur(18px)",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.18)"
+        }}
+      >
+        <span className="flex h-4 w-4 flex-col justify-between">
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+        </span>
+      </button>
 
       <main>
         <section id="hero" className="relative overflow-hidden border-b" style={{ borderColor: theme.border, backgroundColor: theme.background }}>
@@ -1380,7 +1368,7 @@ export default function GreenmontLuxurySite() {
                     fontWeight: 400
                   }}
                 >
-                  Дорогие апартаменты
+                  премиальные аппартаменты
                   <br />
                   <span style={{ color: theme.accent }}>у моря</span>
                   <br />
