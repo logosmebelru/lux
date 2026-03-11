@@ -1,4 +1,6 @@
-export default function ModeSwitchers({
+import { memo } from "react";
+
+const ModeSwitchers = memo(function ModeSwitchers({
   themes,
   formats,
   activeTheme,
@@ -17,6 +19,7 @@ export default function ModeSwitchers({
               key={theme.id}
               className={activeTheme === theme.id ? "active" : ""}
               onClick={() => onThemeChange(theme.id)}
+              aria-pressed={activeTheme === theme.id}
             >
               {theme.name}
             </button>
@@ -32,6 +35,7 @@ export default function ModeSwitchers({
               key={format.id}
               className={activeFormat === format.id ? "active" : ""}
               onClick={() => onFormatChange(format.id)}
+              aria-pressed={activeFormat === format.id}
             >
               {format.name}
             </button>
@@ -40,4 +44,6 @@ export default function ModeSwitchers({
       </div>
     </section>
   );
-}
+});
+
+export default ModeSwitchers;

@@ -1,4 +1,4 @@
-import { startTransition, useDeferredValue, useMemo, useState } from "react";
+import { startTransition, useCallback, useDeferredValue, useMemo, useState } from "react";
 import ApartmentCard from "./components/ApartmentCard";
 import MediaPanel from "./components/MediaPanel";
 import ModeSwitchers from "./components/ModeSwitchers";
@@ -33,6 +33,12 @@ export default function GreenmontLuxurySite() {
   );
 
   const pageStyle = useMemo(() => activeTheme.vars, [activeTheme]);
+  const handleThemeChange = useCallback((nextThemeId) => {
+    startTransition(() => setThemeId(nextThemeId));
+  }, []);
+  const handleFormatChange = useCallback((nextFormatId) => {
+    startTransition(() => setFormatId(nextFormatId));
+  }, []);
 
   return (
     <div
@@ -45,15 +51,16 @@ export default function GreenmontLuxurySite() {
         <div className="hero-media-wrap">
           <SmartImage
             src={HERO_ASSETS[0]}
-            alt="Greenmont luxury residence"
+            alt="Резиденция Greenmont"
             className="hero-media"
             fallbackLabel="Greenmont"
             loading="eager"
+            fetchPriority="high"
           />
           <div className="hero-overlay" />
         </div>
         <div className="hero-content">
-          <p className="hero-eyebrow">Greenmont Luxury Residences</p>
+          <p className="hero-eyebrow">Greenmont • премиальные резиденции</p>
           <h1>
             Пространство, где статус
             <br />
@@ -86,8 +93,8 @@ export default function GreenmontLuxurySite() {
         formats={FORMATS}
         activeTheme={themeId}
         activeFormat={formatId}
-        onThemeChange={(nextThemeId) => startTransition(() => setThemeId(nextThemeId))}
-        onFormatChange={(nextFormatId) => startTransition(() => setFormatId(nextFormatId))}
+        onThemeChange={handleThemeChange}
+        onFormatChange={handleFormatChange}
       />
 
       <section className="story" id="story">
@@ -138,7 +145,7 @@ export default function GreenmontLuxurySite() {
               <MediaPanel
                 src={GALLERY_ASSETS[index]}
                 alt={block.title}
-                label={`Gallery ${index + 1}`}
+                label={`Галерея ${index + 1}`}
               />
               <h3>{block.title}</h3>
               <p>{block.text}</p>
@@ -149,7 +156,7 @@ export default function GreenmontLuxurySite() {
 
       <section className="contact" id="contact">
         <SectionHeader
-          eyebrow="Private Sales"
+          eyebrow="Отдел продаж"
           title="Запросите персональную презентацию Greenmont"
           subtitle="Команда продаж подготовит подборку планировок, финансовую модель и сценарий сделки."
         />

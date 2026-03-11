@@ -1,7 +1,7 @@
 export const THEMES = [
   {
     id: "emerald-noir",
-    name: "Emerald Noir",
+    name: "Изумрудный нуар",
     vars: {
       "--bg": "#06110d",
       "--surface": "#0d1f18",
@@ -15,7 +15,7 @@ export const THEMES = [
   },
   {
     id: "ivory-gold",
-    name: "Ivory Gold",
+    name: "Слоновая кость и золото",
     vars: {
       "--bg": "#f7f1e7",
       "--surface": "#fffaf3",
@@ -29,7 +29,7 @@ export const THEMES = [
   },
   {
     id: "forest-platinum",
-    name: "Forest Platinum",
+    name: "Лесная платина",
     vars: {
       "--bg": "#102019",
       "--surface": "#172d23",
@@ -43,7 +43,7 @@ export const THEMES = [
   },
   {
     id: "terracotta-premium",
-    name: "Terracotta Premium",
+    name: "Премиальная терракота",
     vars: {
       "--bg": "#261612",
       "--surface": "#3a221c",
@@ -57,7 +57,7 @@ export const THEMES = [
   },
   {
     id: "graphite-copper",
-    name: "Graphite Copper",
+    name: "Графит и медь",
     vars: {
       "--bg": "#0f1114",
       "--surface": "#1a1d23",
@@ -71,7 +71,7 @@ export const THEMES = [
   },
   {
     id: "ocean-silk",
-    name: "Ocean Silk",
+    name: "Океанский шёлк",
     vars: {
       "--bg": "#091922",
       "--surface": "#102734",
@@ -85,7 +85,7 @@ export const THEMES = [
   },
   {
     id: "champagne-night",
-    name: "Champagne Night",
+    name: "Ночной шампань",
     vars: {
       "--bg": "#1a1714",
       "--surface": "#2a2520",
@@ -99,7 +99,7 @@ export const THEMES = [
   },
   {
     id: "arctic-luxe",
-    name: "Arctic Luxe",
+    name: "Арктический люкс",
     vars: {
       "--bg": "#eef3f4",
       "--surface": "#ffffff",
@@ -113,7 +113,7 @@ export const THEMES = [
   },
   {
     id: "ruby-opera",
-    name: "Ruby Opera",
+    name: "Рубиновая опера",
     vars: {
       "--bg": "#200a13",
       "--surface": "#33111e",
@@ -127,7 +127,7 @@ export const THEMES = [
   },
   {
     id: "sunset-mineral",
-    name: "Sunset Mineral",
+    name: "Минеральный закат",
     vars: {
       "--bg": "#1f2221",
       "--surface": "#2a2f2d",

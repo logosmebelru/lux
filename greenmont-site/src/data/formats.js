@@ -1,22 +1,22 @@
 export const FORMATS = [
   {
     id: "cinema",
-    name: "CINEMA",
+    name: "КИНО",
     description: "Иммерсивная подача с широкими медиа-панелями."
   },
   {
     id: "editorial",
-    name: "EDITORIAL",
+    name: "РЕДАКЦИОННЫЙ",
     description: "Журнальная композиция с акцентом на текст и ритм."
   },
   {
     id: "panorama",
-    name: "PANORAMA",
-    description: "Больше воздуха и горизонтальных блоков для storytelling."
+    name: "ПАНОРАМА",
+    description: "Больше воздуха и горизонтальных блоков для последовательного сторителлинга."
   },
   {
     id: "catalogue",
-    name: "CATALOGUE",
+    name: "КАТАЛОГ",
     description: "Строгая архитектурная подача для продаж и сравнения."
   }
 ];

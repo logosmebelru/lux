@@ -14,8 +14,14 @@ body,
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: #0d1116;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 .greenmont-page {
@@ -65,6 +71,7 @@ body {
   border-radius: 1.5rem;
   overflow: hidden;
   min-height: 520px;
+  aspect-ratio: 16 / 10;
   position: relative;
   border: 1px solid var(--line);
   background: var(--surface);
@@ -240,6 +247,8 @@ body {
   border-radius: 1rem;
   overflow: hidden;
   background: color-mix(in oklab, var(--surface) 84%, black);
+  content-visibility: auto;
+  contain-intrinsic-size: 520px;
 }
 
 .story-section.reversed .story-content {
@@ -300,6 +309,8 @@ body {
   border-radius: 1rem;
   overflow: hidden;
   background: color-mix(in oklab, var(--surface) 82%, black);
+  content-visibility: auto;
+  contain-intrinsic-size: 480px;
 }
 
 .apartment-media {
@@ -354,6 +365,8 @@ body {
   border-radius: 1rem;
   overflow: hidden;
   background: color-mix(in oklab, var(--surface) 82%, black);
+  content-visibility: auto;
+  contain-intrinsic-size: 460px;
 }
 
 .gallery-item h3,
@@ -416,6 +429,7 @@ body {
   padding: 0.82rem 1.2rem;
   font-weight: 700;
   cursor: pointer;
+  min-height: 48px;
 }
 
 .image-fallback {
@@ -450,6 +464,22 @@ body {
   grid-template-columns: 1fr;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-media,
+  .media-panel-image {
+    transform: none !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .greenmont-page > section {
     width: min(1200px, calc(100% - 1.5rem));
@@ -461,6 +491,7 @@ body {
 
   .hero-media-wrap {
     min-height: 420px;
+    aspect-ratio: 16 / 11;
   }
 
   .metrics {
@@ -490,6 +521,7 @@ body {
 
   .hero-media-wrap {
     min-height: 340px;
+    aspect-ratio: 5 / 4;
   }
 
   .metrics {
@@ -498,5 +530,17 @@ body {
 
   .section-header {
     margin-top: 2.8rem;
+  }
+
+  .story-content,
+  .apartment-content {
+    padding: 0.9rem;
+  }
+
+  .hero-actions a,
+  .switcher-items button {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
   }
 }
