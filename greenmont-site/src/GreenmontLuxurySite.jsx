@@ -437,8 +437,15 @@ const HERO_ASSETS = {
   catalog: HERO_MEDIA[5] ?? HERO_MEDIA[1] ?? HERO_MEDIA[0]
 };
 
+const STORY_ASSET_OVERRIDES = {
+  metrics: HERO_MEDIA[5] ?? pickFromList(HERO_MEDIA, 5),
+  concept: HERO_MEDIA[3] ?? pickFromList(HERO_MEDIA, 3),
+  promenade: HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0)
+};
+
 const STORY_ASSET_MAP = STORY_SECTION_IDS.reduce((accumulator, id, index) => {
   accumulator[id] =
+    STORY_ASSET_OVERRIDES[id] ??
     pickFromList(STORY_MEDIA, index) ??
     pickFromList(GALLERY_ASSETS, index) ??
     pickFromList(HERO_MEDIA, index) ??
