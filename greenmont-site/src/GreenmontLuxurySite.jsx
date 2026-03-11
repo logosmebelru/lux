@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   APARTMENT_ASSETS as APARTMENT_MEDIA,
   GALLERY_ASSETS,
@@ -441,7 +441,13 @@ const HERO_ASSETS = {
 const STORY_ASSET_OVERRIDES = {
   metrics: HERO_MEDIA[5] ?? pickFromList(HERO_MEDIA, 5),
   concept: HERO_MEDIA[3] ?? pickFromList(HERO_MEDIA, 3),
-  promenade: HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0)
+  "private-resort": HERO_MEDIA[1] ?? pickFromList(HERO_MEDIA, 1),
+  promenade: HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0),
+  beach: GALLERY_ASSETS[0] ?? pickFromList(GALLERY_ASSETS, 0),
+  bridges: HERO_MEDIA[4] ?? pickFromList(HERO_MEDIA, 4),
+  "five-senses": GALLERY_ASSETS[1] ?? pickFromList(GALLERY_ASSETS, 1),
+  "art-park": HERO_MEDIA[2] ?? pickFromList(HERO_MEDIA, 2),
+  "evening-light": HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0)
 };
 
 const STORY_ASSET_MAP = STORY_SECTION_IDS.reduce((accumulator, id, index) => {
@@ -472,11 +478,69 @@ const STORY_VIDEO_ASSETS = {
   gallery: VIDEO_ASSETS.gallery
 };
 
+const DESKTOP_CHAPTER_BREAKS = {
+  service: {
+    label: "Глава I",
+    title: "От маршрутов и воды — к сервису private resort",
+    text: "После первых экранов про масштаб и coastline сайт должен менять ритм: не просто показывать территорию, а переводить пользователя в мир сценариев владения, сервиса и lifestyle."
+  },
+  "technology-intro": {
+    label: "Глава II",
+    title: "Дальше история становится точнее и технологичнее",
+    text: "На этом этапе подача должна ощущаться уже не как вдохновение, а как подтверждение качества продукта: инженерия, шумоизоляция, безопасность и зрелость девелопера."
+  },
+  "apartments-intro": {
+    label: "Глава III",
+    title: "Теперь история переходит в конкретные лоты и private sales",
+    text: "После narrative-части пользователь должен оказаться в более точной, коммерчески сильной зоне: выбор лота, аргументы владения и запрос персональной презентации."
+  },
+  "final-contact": {
+    label: "Финал",
+    title: "Последний экран должен ощущаться не формой, а входом в private dialogue",
+    text: "Финальный контактный блок обязан удерживать уровень всей истории: спокойный high-end, сильный аргумент доверия и понятный следующий шаг без ощущения дешевого lead-form."
+  }
+};
+
 const getHeroAsset = (formatId) => HERO_ASSETS[formatId] || HERO_ASSETS.cinematic;
 const getStoryAsset = (id) => STORY_ASSET_MAP[id] || pickFromList(STORY_MEDIA, 0) || pickFromList(HERO_MEDIA, 0);
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function getApartmentSalesProfile(item) {
+  if (item.area.includes("24,8")) {
+    return {
+      scenario: "Инвестиционный coastal-stay формат",
+      pitch: "Низкий порог входа, сильный rental-сценарий и редкий private resort context."
+    };
+  }
+
+  if (item.area.includes("52,1")) {
+    return {
+      scenario: "Пара или второй дом у моря",
+      pitch: "Компактная резиденция с ощущением большого lifestyle-продукта вокруг."
+    };
+  }
+
+  if (item.area.includes("78,4") || item.area.includes("86,9")) {
+    return {
+      scenario: "Семейное владение на длинный сезон",
+      pitch: "Сильнее всего продается через приватность, outdoor-ритм и ощущение второго дома."
+    };
+  }
+
+  if (item.area.includes("102,3") || item.area.includes("118,7")) {
+    return {
+      scenario: "Коллекционный family-lot",
+      pitch: "Здесь цена должна оправдываться террасой, шириной сценария проживания и coastal rarity."
+    };
+  }
+
+  return {
+    scenario: "Редкий high-end coastal asset",
+    pitch: "Пентхаусная приватность, панорамный горизонт и статусный сценарий private ownership."
+  };
 }
 
 function useScrollY() {
@@ -920,7 +984,7 @@ function HeaderNavMenu({ isOpen, onClose, navItems, theme }) {
 
 function StoryHeader({ item, theme, format }) {
   return (
-    <div className={`${format.maxTextWidth} min-w-0 max-w-full`}>
+    <div className={`${format.maxTextWidth} desktop-text-measure min-w-0 max-w-full`}>
       <div
         className="story-eyebrow flex flex-wrap items-center gap-4 text-[11px] uppercase"
         style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}
@@ -962,6 +1026,102 @@ function StoryHeader({ item, theme, format }) {
   );
 }
 
+function DesktopChapterBreak({ chapter, theme }) {
+  return (
+    <section className="hidden lg:block">
+      <div className="mx-auto max-w-[1600px] px-10 pt-20">
+        <div className="desktop-contact-card rounded-[2.4rem] border px-8 py-8 xl:px-10" style={{ borderColor: theme.border, background: theme.surface }}>
+          <div className="grid gap-8 lg:grid-cols-[0.38fr_0.62fr] lg:items-end">
+            <div>
+              <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                {chapter.label}
+              </div>
+              <div className="mt-4 h-px w-24" style={{ backgroundColor: theme.accent }} />
+            </div>
+            <div>
+              <div
+                className="max-w-[32rem] text-[2.2rem] leading-[0.96]"
+                style={{
+                  fontFamily: theme.headingFont,
+                  letterSpacing: theme.headingSpacing,
+                  color: theme.text,
+                  fontStyle: theme.headingStyle,
+                  fontWeight: 400
+                }}
+              >
+                {chapter.title}
+              </div>
+              <div className="mt-4 max-w-[44rem] text-[15px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                {chapter.text}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroMetricsPanel({ theme }) {
+  return (
+    <div className="desktop-hero-panel rounded-[2.7rem] border p-6 lg:p-7 xl:p-8" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+            Масштаб проекта
+          </div>
+          <div
+            className="mt-3 max-w-[20rem] text-[1.75rem] leading-[1.02]"
+            style={{
+              fontFamily: theme.headingFont,
+              letterSpacing: theme.headingSpacing,
+              color: theme.text,
+              fontStyle: theme.headingStyle,
+              fontWeight: 400
+            }}
+          >
+            Ключевые цифры собраны в один спокойный private sales module
+          </div>
+        </div>
+        <div className="rounded-full border px-4 py-2 text-[11px] uppercase" style={{ borderColor: theme.border, color: theme.subtle, background: theme.panel, letterSpacing: theme.eyebrowSpacing }}>
+          premium asset
+        </div>
+      </div>
+      <div className="mt-4 max-w-[32rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+        Вместо рассыпанных карточек справа метрики теперь работают как единый desktop-блок: территория, promenade, пляж и видовые резиденции читаются как аргументы продукта, а не как просто цифры.
+      </div>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        {METRICS.map((item, index) => (
+          <div
+            key={item.label}
+            className={`desktop-metric-card rounded-[1.8rem] border p-5 ${index === METRICS.length - 1 ? "sm:col-span-2" : ""}`}
+            style={{
+              borderColor: theme.border,
+              background: theme.panel
+            }}
+          >
+            <div
+              className="text-[1.8rem] leading-[0.96]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                color: theme.text,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              {item.value}
+            </div>
+            <div className="mt-2 max-w-[16rem] text-sm leading-6" style={{ color: theme.subtle, letterSpacing: theme.bodySpacing }}>
+              {item.label}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ParallaxPanel({
   scrollY,
   speed,
@@ -976,7 +1136,7 @@ function ParallaxPanel({
   const motionTransform = `scale(${1 + (format.mediaEmphasis - 1) * 0.35})`;
 
   return (
-    <div className={`relative overflow-hidden rounded-[2.3rem] border ${height}`} style={{ borderColor: theme.border }}>
+    <div className={`desktop-story-panel desktop-media-layer relative overflow-hidden rounded-[2.3rem] border ${height}`} style={{ borderColor: theme.border }}>
       <MediaFill
         imageSrc={asset}
         videoSrc={videoSrc}
@@ -1051,9 +1211,75 @@ function StorySection({ item, index, scrollY, theme, format, preferStaticMedia }
   );
 }
 
+function DesktopSpotlightStorySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
+  const spotlightMediaHeight = format.id === "gallery" ? "min-h-[84vh]" : "min-h-[78vh]";
+  const asset = getStoryAsset(item.id);
+
+  return (
+    <>
+      <div className="lg:hidden">
+        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
+      </div>
+      <section
+        id={item.id}
+        className="hidden py-28 lg:block"
+        style={{
+          backgroundColor: theme.backgroundAlt,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mx-auto max-w-[1720px] px-10">
+          <div className="desktop-media-layer relative overflow-hidden rounded-[3rem] border" style={{ borderColor: theme.border }}>
+            <MediaFill
+              imageSrc={asset}
+              posterSrc={asset}
+              gradient={item.gradient}
+              transform={`scale(${1.03 + (format.mediaEmphasis - 1) * 0.22})`}
+              containerClassName="absolute inset-0"
+              mediaClassName="h-full w-full object-cover object-center"
+              preferStaticMedia={preferStaticMedia}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.18) 58%, rgba(0,0,0,0.36))"
+              }}
+            />
+          </div>
+          <div className="relative -mt-24 ml-10 max-w-[42rem] rounded-[2.3rem] border p-8 xl:ml-14 xl:p-10" style={{ borderColor: theme.border, background: theme.surfaceStrong, backdropFilter: "blur(18px)" }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              {item.label} · {item.eyebrow}
+            </div>
+            <div
+              className="mt-4 text-[3rem] leading-[0.94]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                color: theme.text,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              {item.title}
+            </div>
+            <div className="mt-5 max-w-[34rem] text-[16px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              {item.text}
+            </div>
+            <div className="mt-6 inline-flex rounded-full border px-4 py-2 text-[11px] uppercase" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: "0.22em" }}>
+              {item.accent}
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMedia }) {
   const offset = clamp(scrollY * (0.01 + index * 0.002), 0, 26);
   const media = APARTMENT_ASSETS[item.id] || {};
+  const salesProfile = getApartmentSalesProfile(item);
   const specs = [
     { label: "Площадь", value: item.area },
     { label: "Этаж", value: item.floor },
@@ -1128,44 +1354,68 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
                 </div>
               ))}
             </div>
-            <div className="mt-8 rounded-[1.8rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
-              <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-                стоимость
-              </div>
-              <div
-                className="mt-3 text-[1.9rem] leading-[1]"
-                style={{
-                  fontFamily: theme.headingFont,
-                  letterSpacing: theme.headingSpacing,
-                  color: theme.text,
-                  fontStyle: theme.headingStyle,
-                  fontWeight: 400
-                }}
-              >
-                Цена по запросу
-              </div>
-              <p className="mt-3 text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-                Персональная презентация, подбор сценария владения и private viewing по этому лоту — по индивидуальному запросу.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <a
-                  href="#final-contact"
-                  className="rounded-full px-5 py-3 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
-                  style={{
-                    backgroundColor: theme.accent,
-                    color: theme.buttonText,
-                    boxShadow: `0 10px 30px ${theme.accentSoft}`
-                  }}
-                >
-                  Запросить этот апартамент
-                </a>
-                <a
-                  href="#gallery"
-                  className="rounded-full border px-5 py-3 text-sm font-semibold tracking-[0.05em] transition"
-                  style={{ borderColor: theme.border, background: theme.surface, color: theme.text }}
-                >
-                  Смотреть медиаматериалы
-                </a>
+            <div className="mt-8 rounded-[1.9rem] border p-5 lg:p-6" style={{ borderColor: theme.border, background: theme.surface }}>
+              <div className="grid gap-6 xl:grid-cols-[0.78fr_1.22fr] xl:items-start">
+                <div>
+                  <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                    стоимость
+                  </div>
+                  <div
+                    className="mt-3 text-[1.9rem] leading-[1]"
+                    style={{
+                      fontFamily: theme.headingFont,
+                      letterSpacing: theme.headingSpacing,
+                      color: theme.text,
+                      fontStyle: theme.headingStyle,
+                      fontWeight: 400
+                    }}
+                  >
+                    Цена по запросу
+                  </div>
+                  <p className="mt-3 max-w-[19rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                    Персональная презентация, подбор сценария владения и private viewing по этому лоту — по индивидуальному запросу.
+                  </p>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="desktop-sales-card rounded-[1.5rem] border p-4" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
+                    <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                      лучший сценарий
+                    </div>
+                    <div className="mt-3 text-sm font-medium leading-6" style={{ color: theme.text }}>
+                      {salesProfile.scenario}
+                    </div>
+                  </div>
+                  <div className="desktop-sales-card rounded-[1.5rem] border p-4" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
+                    <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                      ключевой аргумент
+                    </div>
+                    <div className="mt-3 text-sm leading-6" style={{ color: theme.muted }}>
+                      {salesProfile.pitch}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <div className="flex flex-wrap gap-3">
+                      <a
+                        href="#final-contact"
+                        className="desktop-cta rounded-full px-5 py-3 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
+                        style={{
+                          backgroundColor: theme.accent,
+                          color: theme.buttonText,
+                          boxShadow: `0 10px 30px ${theme.accentSoft}`
+                        }}
+                      >
+                        Запросить этот апартамент
+                      </a>
+                      <a
+                        href="#gallery"
+                        className="desktop-cta rounded-full border px-5 py-3 text-sm font-semibold tracking-[0.05em] transition"
+                        style={{ borderColor: theme.border, background: theme.surface, color: theme.text }}
+                      >
+                        Смотреть медиаматериалы
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1307,6 +1557,45 @@ export default function GreenmontLuxurySite() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Prata&family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Marcellus&family=Tenor+Sans&display=swap');
         html { scroll-behavior: smooth; }
+        @media (min-width: 1024px) {
+          .desktop-text-measure {
+            max-width: 38rem !important;
+          }
+          .desktop-copy-measure {
+            max-width: 34rem !important;
+          }
+          .desktop-hero-panel,
+          .desktop-metric-card,
+          .desktop-sales-card,
+          .desktop-contact-card,
+          .desktop-story-panel,
+          .desktop-cta {
+            transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 420ms ease, border-color 320ms ease, background-color 320ms ease;
+          }
+          .desktop-hero-panel:hover,
+          .desktop-contact-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 28px 80px rgba(0,0,0,0.22);
+          }
+          .desktop-metric-card:hover,
+          .desktop-sales-card:hover,
+          .desktop-story-panel:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.24);
+          }
+          .desktop-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 44px rgba(0,0,0,0.20);
+          }
+          .desktop-media-layer img,
+          .desktop-media-layer video {
+            transition: filter 500ms ease;
+          }
+          .desktop-story-panel:hover img,
+          .desktop-story-panel:hover video {
+            filter: saturate(1.06) contrast(1.02);
+          }
+        }
         @media (max-width: 430px) {
           .story-heading {
             font-size: 2.2rem !important;
@@ -1435,24 +1724,20 @@ export default function GreenmontLuxurySite() {
           />
 
           <div className={`relative z-10 mx-auto flex ${format.heroMinHeight} max-w-[1600px] flex-col justify-between px-6 pb-10 pt-24 lg:px-10 lg:pb-14 lg:pt-28`}>
-            <div className="flex items-start justify-between gap-6">
+            <div className="flex items-start gap-6">
               <div className="hero-chip rounded-full border px-4 py-2 text-[11px] uppercase backdrop-blur-md" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
                 Сочи · private resort · 8 апартаментов в продаже
               </div>
-              <div className="hidden items-center gap-3 text-[11px] uppercase lg:flex" style={{ color: theme.subtle, letterSpacing: "0.36em" }}>
-                <span className="h-px w-16" style={{ backgroundColor: theme.accent }} />
-                режим · {format.name.toLowerCase()}
-              </div>
             </div>
 
-            <div className={`grid items-end gap-10 pb-6 pt-16 ${format.id === "gallery" ? "lg:grid-cols-[0.9fr_1.1fr]" : "lg:grid-cols-[1.08fr_0.92fr]"} lg:pt-20`}>
+            <div className={`grid items-end gap-10 pb-6 pt-16 ${format.id === "gallery" ? "lg:grid-cols-[0.92fr_1.08fr]" : "lg:grid-cols-[1.06fr_0.94fr]"} lg:gap-14 lg:pt-20 xl:gap-16`}>
               <div>
                 <div className="hero-eyebrow mb-8 flex items-center gap-4 text-[11px] uppercase" style={{ color: theme.subtle, letterSpacing: "0.35em" }}>
                   <span>премиальная недвижимость у моря</span>
                   <span className="h-px w-20" style={{ backgroundColor: theme.accent }} />
                 </div>
                 <h1
-                  className={`hero-heading max-w-5xl ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6.2rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[7rem]"} leading-[0.88]`}
+                  className={`hero-heading max-w-5xl lg:max-w-[44rem] ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6.2rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[7rem]"} leading-[0.88]`}
                   style={{
                     fontFamily: theme.headingFont,
                     letterSpacing: theme.headingSpacing,
@@ -1467,13 +1752,13 @@ export default function GreenmontLuxurySite() {
                   <br />
                   в Сочи
                 </h1>
-                <div className={`hero-copy mt-8 ${format.maxTextWidth} border-l pl-6 text-[15px] font-medium leading-8 md:text-[18px]`} style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                <div className={`hero-copy desktop-copy-measure mt-8 ${format.maxTextWidth} border-l pl-6 text-[15px] font-medium leading-8 md:text-[18px]`} style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
                   История сайта разворачивается как длинный cinematic-scroll: сначала масштаб проекта, затем ритм у моря, сервис, технологии, команда, локация и в финале — 8 апартаментов, которые мы продаем сейчас.
                 </div>
                 <div className="hero-cta-row mt-10 flex flex-wrap gap-4">
                   <a
                     href="#apartment-01"
-                    className="hero-cta rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
+                    className="desktop-cta hero-cta rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
                     style={{
                       backgroundColor: theme.accent,
                       color: theme.buttonText,
@@ -1484,7 +1769,7 @@ export default function GreenmontLuxurySite() {
                   </a>
                   <a
                     href="#final-contact"
-                    className="hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    className="desktop-cta hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
                     style={{ borderColor: theme.border, background: theme.surface, color: theme.text }}
                   >
                     Запросить персональную презентацию
@@ -1498,7 +1783,7 @@ export default function GreenmontLuxurySite() {
                       setIsNavOpen(false);
                       setIsSettingsOpen(true);
                     }}
-                    className="hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    className="desktop-cta hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
                     style={{ borderColor: theme.border, background: theme.panel, color: theme.text }}
                   >
                     Настроить вид
@@ -1506,42 +1791,37 @@ export default function GreenmontLuxurySite() {
                 </div>
               </div>
 
-              <div className={`grid gap-4 ${format.id === "gallery" ? "sm:grid-cols-2 xl:grid-cols-2" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
-                {METRICS.map((item, index) => (
-                  <div
-                    key={item.label}
-                    className="rounded-[1.8rem] border p-5 backdrop-blur-md"
-                    style={{
-                      borderColor: theme.border,
-                      background: theme.panel,
-                      transform: `translate3d(0, ${clamp(scrollY * (0.02 + index * 0.008) * format.parallaxBoost, 0, 34)}px, 0)`
-                    }}
-                  >
-                    <div style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, color: theme.text, fontStyle: theme.headingStyle, fontWeight: 400 }} className="text-[1.85rem]">
-                      {item.value}
-                    </div>
-                    <div className="mt-1 text-sm" style={{ color: theme.subtle, letterSpacing: theme.bodySpacing }}>
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <HeroMetricsPanel theme={theme} />
             </div>
           </div>
         </section>
 
         {STORY_SECTIONS.slice(1).map((item, index) => (
-          <StorySection
-            key={item.id}
-            item={item}
-            index={index}
-            scrollY={scrollY}
-            theme={theme}
-            format={format}
-            preferStaticMedia={prefersReducedMotion}
-          />
+          <Fragment key={item.id}>
+            {DESKTOP_CHAPTER_BREAKS[item.id] ? <DesktopChapterBreak chapter={DESKTOP_CHAPTER_BREAKS[item.id]} theme={theme} /> : null}
+            {item.id === "beach" ? (
+              <DesktopSpotlightStorySection
+                item={item}
+                index={index}
+                scrollY={scrollY}
+                theme={theme}
+                format={format}
+                preferStaticMedia={prefersReducedMotion}
+              />
+            ) : (
+              <StorySection
+                item={item}
+                index={index}
+                scrollY={scrollY}
+                theme={theme}
+                format={format}
+                preferStaticMedia={prefersReducedMotion}
+              />
+            )}
+          </Fragment>
         ))}
 
+        <DesktopChapterBreak chapter={DESKTOP_CHAPTER_BREAKS["apartments-intro"]} theme={theme} />
         <section id="apartments-intro" className="border-y py-20 lg:py-28" style={{ borderColor: theme.border, backgroundColor: theme.backgroundAlt }}>
           <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
             <StoryHeader
@@ -1582,6 +1862,7 @@ export default function GreenmontLuxurySite() {
           />
         ))}
 
+        <DesktopChapterBreak chapter={DESKTOP_CHAPTER_BREAKS["final-contact"]} theme={theme} />
         <section id="final-contact" className="border-t py-20 lg:py-28" style={{ borderColor: theme.border, background: `linear-gradient(180deg, ${theme.backgroundAlt} 0%, ${theme.background} 100%)` }}>
           <div className="mx-auto grid max-w-[1600px] gap-10 px-6 lg:grid-cols-[0.96fr_1.04fr] lg:px-10">
             <div>
@@ -1596,19 +1877,57 @@ export default function GreenmontLuxurySite() {
                 theme={theme}
                 format={format}
               />
-              <div className="mt-8 rounded-[2rem] border p-6 text-sm leading-7" style={{ borderColor: theme.border, background: theme.surface, color: theme.muted }}>
-                Офис продаж можно дополнить картой маршрута, видео офиса продаж и отдельным CTA на private viewing. В light-темах этот блок ощущается более editorial, в dark-темах — более cinematic.
+              <div className="mt-8 grid gap-4 xl:grid-cols-3">
+                {[
+                  {
+                    title: "Private viewing",
+                    text: "Персональный сценарий показа по тем лотам, которые соответствуют вашему типу владения."
+                  },
+                  {
+                    title: "Презентация проекта",
+                    text: "Подбор материалов, аргументов и медиаблоков под инвестиционный или lifestyle-запрос."
+                  },
+                  {
+                    title: "Конфиденциальный диалог",
+                    text: "Финальный контакт читается как discreet sales-этап, а не как обычная lead-форма."
+                  }
+                ].map((card) => (
+                  <div key={card.title} className="desktop-contact-card rounded-[1.7rem] border p-5 text-sm leading-7" style={{ borderColor: theme.border, background: theme.surface, color: theme.muted }}>
+                    <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                      {card.title}
+                    </div>
+                    <div className="mt-3 text-sm leading-7" style={{ color: theme.muted }}>
+                      {card.text}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="rounded-[2.2rem] border p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] md:p-8 lg:p-9" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
+            <div className="desktop-contact-card rounded-[2.2rem] border p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] md:p-8 lg:p-9" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
               <div className="mb-6 border-b pb-5" style={{ borderColor: theme.border }}>
                 <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
                   персональный запрос
                 </div>
-                <div className="mt-3 text-[2rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, color: theme.text, fontStyle: theme.headingStyle, fontWeight: 400 }}>
-                  Оставьте заявку на подбор апартамента
-                </div>
+                  <div className="mt-3 text-[2rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, color: theme.text, fontStyle: theme.headingStyle, fontWeight: 400 }}>
+                    Оставьте заявку на подбор апартамента
+                  </div>
+              </div>
+              <div className="mb-5 grid gap-3 md:grid-cols-3">
+                {[
+                  { label: "Формат", value: "private viewing" },
+                  { label: "Материалы", value: "презентация и медиапакет" },
+                  { label: "Фокус", value: "8 лотов в продаже" }
+                ].map((item) => (
+                  <div key={item.label} className="desktop-sales-card rounded-[1.4rem] border p-4" style={{ borderColor: theme.border, background: theme.surface }}>
+                    <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                      {item.label}
+                    </div>
+                    <div className="mt-2 text-sm leading-6" style={{ color: theme.text }}>
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <input
@@ -1637,13 +1956,13 @@ export default function GreenmontLuxurySite() {
               <div className="mt-5 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
-                  className="rounded-full px-6 py-3 text-sm font-semibold tracking-[0.05em]"
+                  className="desktop-cta rounded-full px-6 py-3 text-sm font-semibold tracking-[0.05em]"
                   style={{ backgroundColor: theme.accent, color: theme.buttonText }}
                 >
                   Отправить заявку
                 </button>
                 <div className="text-xs leading-6" style={{ color: theme.subtle }}>
-                  Персональный подбор, презентация, private viewing.
+                  Персональный подбор, презентация, private viewing и следующий шаг по конкретному лоту.
                 </div>
               </div>
             </div>
