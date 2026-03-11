@@ -1251,7 +1251,7 @@ export default function GreenmontLuxurySite() {
       : `translate3d(0, ${scrollY * 0.22 * format.parallaxBoost}px, 0) scale(${1.08 * format.mediaEmphasis})`;
   const heroMediaContainerClassName = isPhoneViewport ? "absolute inset-0" : "absolute inset-[-10%]";
   const heroMediaClassName = isPhoneViewport
-    ? "h-full w-full object-contain object-center"
+    ? "h-full w-full object-cover object-center"
     : "h-full w-full object-cover object-center";
   const heroMediaImageSrc = isPhoneViewport ? heroPhoneAsset : heroAsset;
   const heroMediaPosterSrc = isPhoneViewport ? heroPhoneAsset : heroAsset;
