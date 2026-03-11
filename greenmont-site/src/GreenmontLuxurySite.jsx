@@ -480,24 +480,36 @@ const STORY_VIDEO_ASSETS = {
 
 const DESKTOP_CHAPTER_BREAKS = {
   service: {
+    variant: "ribbon",
     label: "Глава I",
     title: "От маршрутов и воды — к сервису private resort",
     text: "После первых экранов про масштаб и coastline сайт должен менять ритм: не просто показывать территорию, а переводить пользователя в мир сценариев владения, сервиса и lifestyle."
   },
   "technology-intro": {
+    variant: "panel",
     label: "Глава II",
     title: "Дальше история становится точнее и технологичнее",
     text: "На этом этапе подача должна ощущаться уже не как вдохновение, а как подтверждение качества продукта: инженерия, шумоизоляция, безопасность и зрелость девелопера."
   },
   "apartments-intro": {
+    variant: "minimal",
     label: "Глава III",
     title: "Теперь история переходит в конкретные лоты и private sales",
     text: "После narrative-части пользователь должен оказаться в более точной, коммерчески сильной зоне: выбор лота, аргументы владения и запрос персональной презентации."
   },
   "final-contact": {
+    variant: "lounge",
     label: "Финал",
     title: "Последний экран должен ощущаться не формой, а входом в private dialogue",
     text: "Финальный контактный блок обязан удерживать уровень всей истории: спокойный high-end, сильный аргумент доверия и понятный следующий шаг без ощущения дешевого lead-form."
+  }
+};
+
+const DESKTOP_QUOTE_MOMENTS = {
+  service: {
+    label: "Private service",
+    quote: "Сервис здесь должен ощущаться не как доп. опция, а как сама форма владения.",
+    note: "После первых coastline-экранов narrative делает паузу и переводит внимание от ландшафта к повседневному качеству private resort."
   }
 };
 
@@ -994,7 +1006,7 @@ function StoryHeader({ item, theme, format }) {
         <span>{item.eyebrow}</span>
       </div>
       <h2
-        className="story-heading mt-5 max-w-full text-[2.7rem] leading-[0.92] [overflow-wrap:anywhere] md:text-[4.1rem] xl:text-[5rem]"
+        className="story-heading desktop-heading-measure mt-5 max-w-full text-[2.7rem] leading-[0.92] [overflow-wrap:anywhere] md:text-[4.1rem] xl:text-[5rem]"
         style={{
           fontFamily: theme.headingFont,
           letterSpacing: theme.headingSpacing,
@@ -1006,7 +1018,7 @@ function StoryHeader({ item, theme, format }) {
         {item.title}
       </h2>
       <div
-        className="story-copy mt-8 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]"
+        className="story-copy desktop-story-copy-measure mt-8 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]"
         style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}
       >
         {item.text}
@@ -1027,10 +1039,28 @@ function StoryHeader({ item, theme, format }) {
 }
 
 function DesktopChapterBreak({ chapter, theme }) {
+  const variant = chapter.variant || "ribbon";
+  const cardBackground =
+    variant === "panel"
+      ? `linear-gradient(135deg, ${theme.surfaceStrong} 0%, ${theme.panel} 100%)`
+      : variant === "minimal"
+        ? theme.backgroundAlt
+        : variant === "lounge"
+          ? `linear-gradient(180deg, ${theme.surfaceStrong} 0%, ${theme.surface} 100%)`
+          : theme.surface;
+  const cardClassName =
+    variant === "minimal"
+      ? "desktop-contact-card rounded-[2.8rem] border px-10 py-10 xl:px-12 xl:py-11"
+      : variant === "lounge"
+        ? "desktop-contact-card rounded-[2.8rem] border px-8 py-9 xl:px-11 xl:py-11"
+        : "desktop-contact-card rounded-[2.4rem] border px-8 py-8 xl:px-10";
+  const headingWidth = variant === "minimal" ? "max-w-[28rem]" : "max-w-[32rem]";
+  const copyWidth = variant === "lounge" ? "max-w-[40rem]" : "max-w-[44rem]";
+
   return (
     <section className="hidden lg:block">
-      <div className="mx-auto max-w-[1600px] px-10 pt-20">
-        <div className="desktop-contact-card rounded-[2.4rem] border px-8 py-8 xl:px-10" style={{ borderColor: theme.border, background: theme.surface }}>
+      <div className={`mx-auto max-w-[1600px] px-10 ${variant === "minimal" ? "pt-14" : "pt-20"}`}>
+        <div className={cardClassName} style={{ borderColor: theme.border, background: cardBackground }}>
           <div className="grid gap-8 lg:grid-cols-[0.38fr_0.62fr] lg:items-end">
             <div>
               <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
@@ -1040,7 +1070,7 @@ function DesktopChapterBreak({ chapter, theme }) {
             </div>
             <div>
               <div
-                className="max-w-[32rem] text-[2.2rem] leading-[0.96]"
+                className={`${headingWidth} text-[2.2rem] leading-[0.96]`}
                 style={{
                   fontFamily: theme.headingFont,
                   letterSpacing: theme.headingSpacing,
@@ -1051,7 +1081,7 @@ function DesktopChapterBreak({ chapter, theme }) {
               >
                 {chapter.title}
               </div>
-              <div className="mt-4 max-w-[44rem] text-[15px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              <div className={`mt-4 ${copyWidth} text-[15px] leading-8`} style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
                 {chapter.text}
               </div>
             </div>
@@ -1059,6 +1089,39 @@ function DesktopChapterBreak({ chapter, theme }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function DesktopFloatingControls({ theme, isNavOpen, isSettingsOpen, onToggleNav, onOpenSettings }) {
+  return (
+    <div className="desktop-control-cluster hidden lg:flex">
+      <button
+        type="button"
+        aria-label="Открыть навигацию"
+        aria-expanded={isNavOpen}
+        onClick={onToggleNav}
+        className="desktop-floating-button rounded-full border px-5 py-3 text-[11px] uppercase"
+        style={{ borderColor: theme.border, background: theme.header, color: theme.text, letterSpacing: theme.eyebrowSpacing }}
+      >
+        <span className="mr-3 inline-flex h-3 w-4 flex-col justify-between align-middle">
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+          <span className="block h-px w-full" style={{ backgroundColor: theme.text }} />
+        </span>
+        Меню
+      </button>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        aria-expanded={isSettingsOpen}
+        aria-controls="settings-drawer"
+        onClick={onOpenSettings}
+        className="desktop-floating-button rounded-full border px-5 py-3 text-[11px] uppercase"
+        style={{ borderColor: theme.border, background: theme.surface, color: theme.text, letterSpacing: theme.eyebrowSpacing }}
+      >
+        Вид
+      </button>
+    </div>
   );
 }
 
@@ -1088,7 +1151,7 @@ function HeroMetricsPanel({ theme }) {
         </div>
       </div>
       <div className="mt-4 max-w-[32rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-        Вместо рассыпанных карточек справа метрики теперь работают как единый desktop-блок: территория, promenade, пляж и видовые резиденции читаются как аргументы продукта, а не как просто цифры.
+        Один собранный блок вместо множества мелких карточек: территория, promenade, пляж и видовые резиденции читаются как аргументы продукта.
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {METRICS.map((item, index) => (
@@ -1119,6 +1182,270 @@ function HeroMetricsPanel({ theme }) {
         ))}
       </div>
     </div>
+  );
+}
+
+function DesktopQuoteStorySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
+  const quote = DESKTOP_QUOTE_MOMENTS[item.id];
+
+  return (
+    <>
+      <div className="lg:hidden">
+        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
+      </div>
+      <section
+        id={item.id}
+        className="hidden py-32 lg:block"
+        style={{
+          background: `linear-gradient(180deg, ${theme.background} 0%, ${theme.backgroundAlt} 100%)`,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mx-auto max-w-[1520px] px-10">
+          <div className="rounded-[3rem] border px-12 py-16 text-center" style={{ borderColor: theme.border, background: theme.panel }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              {item.label} · {quote.label}
+            </div>
+            <div
+              className="mx-auto mt-8 max-w-[62rem] text-[3.5rem] leading-[0.92] xl:text-[4.8rem]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                color: theme.text,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              {quote.quote}
+            </div>
+            <div className="mx-auto mt-8 max-w-[36rem] text-[15px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              {quote.note}
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function DesktopImmersiveStorySection({
+  item,
+  index,
+  scrollY,
+  theme,
+  format,
+  preferStaticMedia,
+  imageSrc,
+  videoSrc,
+  posterSrc,
+  mediaLabel,
+  summary,
+  panelAlignment = "left"
+}) {
+  const asset = imageSrc || getStoryAsset(item.id);
+
+  return (
+    <>
+      <div className="lg:hidden">
+        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
+      </div>
+      <section
+        id={item.id}
+        className="hidden py-28 lg:block"
+        style={{
+          backgroundColor: theme.backgroundAlt,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mx-auto max-w-[1760px] px-10">
+          <div className="desktop-media-layer relative min-h-[88vh] overflow-hidden rounded-[3.2rem] border" style={{ borderColor: theme.border }}>
+            <MediaFill
+              imageSrc={asset}
+              videoSrc={videoSrc}
+              posterSrc={posterSrc || asset}
+              gradient={item.gradient}
+              transform={`scale(${1.02 + (format.mediaEmphasis - 1) * 0.16})`}
+              containerClassName="absolute inset-0"
+              mediaClassName="h-full w-full object-cover object-center"
+              preferStaticMedia={preferStaticMedia}
+              priority
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.12) 42%, rgba(0,0,0,0.42) 100%)"
+              }}
+            />
+            <div className={`absolute bottom-0 w-full p-10 xl:p-14 ${panelAlignment === "right" ? "flex justify-end" : ""}`}>
+              <div className="max-w-[32rem] rounded-[2.1rem] border px-7 py-7 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
+                <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                  {item.label} · {mediaLabel}
+                </div>
+                <div
+                  className="mt-4 text-[2.7rem] leading-[0.94]"
+                  style={{
+                    fontFamily: theme.headingFont,
+                    letterSpacing: theme.headingSpacing,
+                    color: theme.text,
+                    fontStyle: theme.headingStyle,
+                    fontWeight: 400
+                  }}
+                >
+                  {item.title}
+                </div>
+                <div className="mt-5 text-[15px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                  {summary}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function DesktopEditorialGallerySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
+  return (
+    <>
+      <div className="lg:hidden">
+        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
+      </div>
+      <section
+        id={item.id}
+        className="hidden py-28 lg:block"
+        style={{
+          background: `linear-gradient(180deg, ${theme.backgroundAlt} 0%, ${theme.background} 100%)`,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mx-auto max-w-[1720px] px-10">
+          <div className="grid gap-10 lg:grid-cols-[0.58fr_0.42fr] lg:items-end">
+            <div>
+              <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                {item.label} · premium editorial gallery
+              </div>
+              <div
+                className="mt-5 max-w-[44rem] text-[3.1rem] leading-[0.94]"
+                style={{
+                  fontFamily: theme.headingFont,
+                  letterSpacing: theme.headingSpacing,
+                  color: theme.text,
+                  fontStyle: theme.headingStyle,
+                  fontWeight: 400
+                }}
+              >
+                Галерея должна ощущаться как крупная editorial-серия, а не как обычная сетка.
+              </div>
+            </div>
+            <div className="max-w-[30rem] lg:justify-self-end">
+              <div className="text-[15px] leading-8" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                Видео, лучший coastal-кадр и один тихий панорамный разворот работают как финальная медиа-презентация перед запросом стоимости.
+              </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="#apartment-01"
+                  className="desktop-cta rounded-full px-5 py-3 text-sm font-semibold tracking-[0.05em]"
+                  style={{ backgroundColor: theme.accent, color: theme.buttonText }}
+                >
+                  Смотреть лоты
+                </a>
+                <a
+                  href="#final-contact"
+                  className="desktop-cta rounded-full border px-5 py-3 text-sm font-semibold tracking-[0.05em]"
+                  style={{ borderColor: theme.border, background: theme.surface, color: theme.text }}
+                >
+                  Запросить презентацию
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 grid gap-5 lg:grid-cols-[1.22fr_0.78fr]">
+            <div className="desktop-media-layer relative min-h-[42rem] overflow-hidden rounded-[3rem] border" style={{ borderColor: theme.border }}>
+              <MediaFill
+                imageSrc={HERO_MEDIA[0]}
+                videoSrc={VIDEO_ASSETS.gallery}
+                posterSrc={HERO_MEDIA[0]}
+                gradient={item.gradient}
+                containerClassName="absolute inset-0"
+                mediaClassName="h-full w-full object-cover object-center"
+                transform={`scale(${1.03 + (format.mediaEmphasis - 1) * 0.15})`}
+                preferStaticMedia={preferStaticMedia}
+              />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.38))" }} />
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+                  branded reel
+                </div>
+                <div className="mt-3 max-w-[24rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.78)", letterSpacing: theme.bodySpacing }}>
+                  Движение, свет и shoreline-ритм без лишних пояснений.
+                </div>
+              </div>
+            </div>
+            <div className="grid gap-5">
+              {[
+                {
+                  title: "Private shoreline mood",
+                  text: "Один сильный coastal-кадр вместо технической сетки.",
+                  image: GALLERY_ASSETS[0] || HERO_MEDIA[4]
+                },
+                {
+                  title: "Архитектура и тишина",
+                  text: "Фасад и вечерний свет как часть статуса продукта.",
+                  image: HERO_MEDIA[5] || HERO_MEDIA[2]
+                }
+              ].map((block) => (
+                <div key={block.title} className="desktop-media-layer relative min-h-[20rem] overflow-hidden rounded-[2.3rem] border" style={{ borderColor: theme.border }}>
+                  <MediaFill
+                    imageSrc={block.image}
+                    posterSrc={block.image}
+                    gradient={item.gradient}
+                    containerClassName="absolute inset-0"
+                    mediaClassName="h-full w-full object-cover object-center"
+                    transform="scale(1.03)"
+                    preferStaticMedia={preferStaticMedia}
+                  />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.44))" }} />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+                      {block.title}
+                    </div>
+                    <div className="mt-2 max-w-[20rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.76)", letterSpacing: theme.bodySpacing }}>
+                      {block.text}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="desktop-media-layer relative mt-5 min-h-[30rem] overflow-hidden rounded-[3rem] border" style={{ borderColor: theme.border }}>
+            <MediaFill
+              imageSrc={GALLERY_ASSETS[1] || HERO_MEDIA[1]}
+              posterSrc={GALLERY_ASSETS[1] || HERO_MEDIA[1]}
+              gradient={item.gradient}
+              containerClassName="absolute inset-0"
+              mediaClassName="h-full w-full object-cover object-center"
+              transform="scale(1.03)"
+              preferStaticMedia={preferStaticMedia}
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.34))" }} />
+            <div className="absolute bottom-0 left-0 p-8">
+              <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+                full-bleed photo
+              </div>
+              <div className="mt-3 max-w-[24rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.78)", letterSpacing: theme.bodySpacing }}>
+                Финальный фотокадр перед переходом к стоимости и private dialogue.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -1287,19 +1614,9 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
     { label: "Терраса", value: item.terrace }
   ];
 
-  const cards = [
-    { title: "Главный кадр", text: "Основной продающий ракурс этого лота", image: media.main },
-    { title: "Интерьер", text: "Жилая зона и ощущение пространства", image: media.interior },
-    { title: "Терраса / вид", text: "Outdoor-сценарий и визуальный горизонт", image: media.terrace },
-    ...(format.id === "gallery"
-      ? [
-          {
-            title: "Планировка",
-            text: media.plan ? "Схема и логика сценария проживания" : "Планировка будет добавлена отдельным файлом без изменения текущей композиции.",
-            image: media.plan
-          }
-        ]
-      : [])
+  const secondaryMediaCards = [
+    { title: "Жилое пространство", text: "Свет, воздух и повседневный ритм интерьера.", image: media.interior },
+    { title: "Терраса и горизонт", text: "Outdoor-сценарий, приватность и главный видовой аргумент.", image: media.terrace }
   ];
 
   return (
@@ -1420,25 +1737,73 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
             </div>
           </div>
           <div
-            className="min-w-0 overflow-hidden rounded-[2.2rem] border shadow-[0_20px_80px_rgba(0,0,0,0.24)]"
+            className="desktop-apartment-shell min-w-0 overflow-hidden rounded-[2.2rem] border shadow-[0_20px_80px_rgba(0,0,0,0.24)]"
             style={{
               borderColor: theme.border,
               background: theme.surfaceStrong,
               transform: `translate3d(0, ${offset}px, 0)`
             }}
           >
-            <div className={`${format.id === "gallery" ? "aspect-[16/11]" : "aspect-[5/4]"} relative overflow-hidden`}>
-              <MediaFill
-                imageSrc={media.main}
-                posterSrc={media.main}
-                gradient={item.gradient}
-                transform="scale(1.03)"
-                priority={index < 2}
-                preferStaticMedia={preferStaticMedia}
-              />
+            <div className="hidden gap-4 p-5 lg:grid lg:grid-cols-[1.24fr_0.76fr] lg:items-stretch">
+              <div className="desktop-media-layer relative min-h-[34rem] overflow-hidden rounded-[2rem] border" style={{ borderColor: theme.border }}>
+                <MediaFill
+                  imageSrc={media.main}
+                  posterSrc={media.main}
+                  gradient={item.gradient}
+                  transform="scale(1.03)"
+                  priority={index < 2}
+                  preferStaticMedia={preferStaticMedia}
+                />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.36))" }} />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="inline-flex rounded-full border px-4 py-2 text-[11px] uppercase" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                    {salesProfile.scenario}
+                  </div>
+                  <div
+                    className="mt-4 max-w-[22rem] text-[1.9rem] leading-[0.98]"
+                    style={{
+                      fontFamily: theme.headingFont,
+                      letterSpacing: theme.headingSpacing,
+                      color: "#fff",
+                      fontStyle: theme.headingStyle,
+                      fontWeight: 400
+                    }}
+                  >
+                    Главный видовой ракурс этого лота
+                  </div>
+                  <div className="mt-3 max-w-[24rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.78)", letterSpacing: theme.bodySpacing }}>
+                    {salesProfile.pitch}
+                  </div>
+                </div>
+              </div>
+              <div className="grid gap-4">
+                {secondaryMediaCards.map((block) => (
+                  <div key={block.title} className="desktop-media-layer relative min-h-[16rem] overflow-hidden rounded-[1.8rem] border" style={{ borderColor: theme.border }}>
+                    <MediaFill
+                      imageSrc={block.image}
+                      posterSrc={block.image}
+                      gradient={item.gradient}
+                      transform="scale(1.03)"
+                      preferStaticMedia={preferStaticMedia}
+                    />
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.42))" }} />
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+                        {block.title}
+                      </div>
+                      <div className="mt-2 max-w-[16rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.76)", letterSpacing: theme.bodySpacing }}>
+                        {block.text}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className={`grid gap-4 p-6 ${format.id === "gallery" ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
-              {cards.map((block, blockIndex) => (
+            <div className="grid gap-4 p-6 lg:hidden">
+              {[
+                { title: "Главный вид", text: "Ключевой продающий ракурс этого лота.", image: media.main },
+                ...secondaryMediaCards
+              ].map((block, blockIndex) => (
                 <div key={`${block.title}-${blockIndex}`} className="rounded-[1.4rem] border p-4" style={{ borderColor: theme.border, background: theme.surface }}>
                   <div className="relative mb-3 aspect-[4/3] overflow-hidden rounded-[1rem] border" style={{ borderColor: theme.border }}>
                     <MediaFill
@@ -1448,9 +1813,6 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
                       transform="scale(1.03)"
                       preferStaticMedia={preferStaticMedia}
                     />
-                  </div>
-                  <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-                    медиаблок
                   </div>
                   <div className="mt-3 text-sm font-medium leading-6" style={{ color: theme.text }}>
                     {block.title}
@@ -1498,8 +1860,8 @@ export default function GreenmontLuxurySite() {
   const heroMediaTransform =
     prefersReducedMotion || isPhoneViewport
       ? undefined
-      : `translate3d(0, ${scrollY * 0.22 * format.parallaxBoost}px, 0) scale(${1.08 * format.mediaEmphasis})`;
-  const heroMediaContainerClassName = isPhoneViewport ? "absolute inset-0" : "absolute inset-[-10%]";
+      : `translate3d(0, ${scrollY * 0.14 * format.parallaxBoost}px, 0) scale(${1.04 * format.mediaEmphasis})`;
+  const heroMediaContainerClassName = "absolute inset-0";
   const heroMediaClassName = isPhoneViewport
     ? "h-full w-full object-cover object-center"
     : "h-full w-full object-cover object-center";
@@ -1561,16 +1923,39 @@ export default function GreenmontLuxurySite() {
           .desktop-text-measure {
             max-width: 38rem !important;
           }
+          .desktop-heading-measure {
+            max-width: 40rem !important;
+            text-wrap: balance;
+          }
           .desktop-copy-measure {
-            max-width: 34rem !important;
+            max-width: 31rem !important;
+          }
+          .desktop-story-copy-measure {
+            max-width: 33rem !important;
           }
           .desktop-hero-panel,
           .desktop-metric-card,
           .desktop-sales-card,
           .desktop-contact-card,
           .desktop-story-panel,
-          .desktop-cta {
+          .desktop-cta,
+          .desktop-floating-button {
             transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 420ms ease, border-color 320ms ease, background-color 320ms ease;
+          }
+          .desktop-control-cluster {
+            position: fixed;
+            top: 1.75rem;
+            right: 2.5rem;
+            z-index: 52;
+            gap: 0.75rem;
+          }
+          .desktop-floating-button {
+            backdrop-filter: blur(18px);
+            box-shadow: 0 14px 44px rgba(0,0,0,0.16);
+          }
+          .desktop-floating-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 56px rgba(0,0,0,0.20);
           }
           .desktop-hero-panel:hover,
           .desktop-contact-card:hover {
@@ -1678,6 +2063,19 @@ export default function GreenmontLuxurySite() {
         navItems={navItems}
         theme={theme}
       />
+      <DesktopFloatingControls
+        theme={theme}
+        isNavOpen={isNavOpen}
+        isSettingsOpen={isSettingsOpen}
+        onToggleNav={() => {
+          setIsSettingsOpen(false);
+          setIsNavOpen((current) => !current);
+        }}
+        onOpenSettings={() => {
+          setIsNavOpen(false);
+          setIsSettingsOpen(true);
+        }}
+      />
 
       <button
         type="button"
@@ -1687,7 +2085,7 @@ export default function GreenmontLuxurySite() {
           setIsSettingsOpen(false);
           setIsNavOpen((current) => !current);
         }}
-        className="fixed right-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border transition sm:right-6 sm:top-6"
+        className="fixed right-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border transition sm:right-6 sm:top-6 lg:hidden"
         style={{
           borderColor: theme.border,
           background: theme.header,
@@ -1719,25 +2117,25 @@ export default function GreenmontLuxurySite() {
           <div
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(circle at top, rgba(255,255,255,0.22), transparent 26%), linear-gradient(180deg, transparent, ${theme.panel})`
+              background: `radial-gradient(circle at top, rgba(255,255,255,0.16), transparent 30%), linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.1) 48%, ${theme.panel})`
             }}
           />
 
-          <div className={`relative z-10 mx-auto flex ${format.heroMinHeight} max-w-[1600px] flex-col justify-between px-6 pb-10 pt-24 lg:px-10 lg:pb-14 lg:pt-28`}>
+          <div className={`relative z-10 mx-auto flex ${format.heroMinHeight} max-w-[1600px] flex-col justify-between px-6 pb-10 pt-24 lg:px-10 lg:pb-16 lg:pt-40 xl:pt-44`}>
             <div className="flex items-start gap-6">
-              <div className="hero-chip rounded-full border px-4 py-2 text-[11px] uppercase backdrop-blur-md" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              <div className="hero-chip rounded-full border px-4 py-2 text-[11px] uppercase backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
                 Сочи · private resort · 8 апартаментов в продаже
               </div>
             </div>
 
-            <div className={`grid items-end gap-10 pb-6 pt-16 ${format.id === "gallery" ? "lg:grid-cols-[0.92fr_1.08fr]" : "lg:grid-cols-[1.06fr_0.94fr]"} lg:gap-14 lg:pt-20 xl:gap-16`}>
+            <div className={`grid items-end gap-10 pb-6 pt-16 ${format.id === "gallery" ? "lg:grid-cols-[0.96fr_1.04fr]" : "lg:grid-cols-[1fr_1fr]"} lg:gap-16 lg:pb-3 lg:pt-32 xl:gap-20 xl:pt-36`}>
               <div>
                 <div className="hero-eyebrow mb-8 flex items-center gap-4 text-[11px] uppercase" style={{ color: theme.subtle, letterSpacing: "0.35em" }}>
                   <span>премиальная недвижимость у моря</span>
                   <span className="h-px w-20" style={{ backgroundColor: theme.accent }} />
                 </div>
                 <h1
-                  className={`hero-heading max-w-5xl lg:max-w-[44rem] ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6.2rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[7rem]"} leading-[0.88]`}
+                  className={`hero-heading max-w-5xl lg:max-w-[40rem] ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[6.4rem]"} leading-[0.88]`}
                   style={{
                     fontFamily: theme.headingFont,
                     letterSpacing: theme.headingSpacing,
@@ -1753,7 +2151,7 @@ export default function GreenmontLuxurySite() {
                   в Сочи
                 </h1>
                 <div className={`hero-copy desktop-copy-measure mt-8 ${format.maxTextWidth} border-l pl-6 text-[15px] font-medium leading-8 md:text-[18px]`} style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
-                  История сайта разворачивается как длинный cinematic-scroll: сначала масштаб проекта, затем ритм у моря, сервис, технологии, команда, локация и в финале — 8 апартаментов, которые мы продаем сейчас.
+                  Сначала проект продает масштаб, тишину и ритм private resort. Затем переводит внимание к 8 конкретным лотам и спокойному private dialogue.
                 </div>
                 <div className="hero-cta-row mt-10 flex flex-wrap gap-4">
                   <a
@@ -1783,7 +2181,7 @@ export default function GreenmontLuxurySite() {
                       setIsNavOpen(false);
                       setIsSettingsOpen(true);
                     }}
-                    className="desktop-cta hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    className="desktop-cta hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition lg:hidden"
                     style={{ borderColor: theme.border, background: theme.panel, color: theme.text }}
                   >
                     Настроить вид
@@ -1799,7 +2197,29 @@ export default function GreenmontLuxurySite() {
         {STORY_SECTIONS.slice(1).map((item, index) => (
           <Fragment key={item.id}>
             {DESKTOP_CHAPTER_BREAKS[item.id] ? <DesktopChapterBreak chapter={DESKTOP_CHAPTER_BREAKS[item.id]} theme={theme} /> : null}
-            {item.id === "beach" ? (
+            {item.id === "service" ? (
+              <DesktopQuoteStorySection
+                item={item}
+                index={index}
+                scrollY={scrollY}
+                theme={theme}
+                format={format}
+                preferStaticMedia={prefersReducedMotion}
+              />
+            ) : item.id === "promenade" ? (
+              <DesktopImmersiveStorySection
+                item={item}
+                index={index}
+                scrollY={scrollY}
+                theme={theme}
+                format={format}
+                preferStaticMedia={prefersReducedMotion}
+                videoSrc={VIDEO_ASSETS.flow}
+                posterSrc={getStoryAsset(item.id)}
+                mediaLabel="full-screen video"
+                summary="Маршрут к воде здесь работает как кинематографический момент: меньше пояснений, больше света, воздуха и ощущения движения к морю."
+              />
+            ) : item.id === "beach" ? (
               <DesktopSpotlightStorySection
                 item={item}
                 index={index}
@@ -1807,6 +2227,19 @@ export default function GreenmontLuxurySite() {
                 theme={theme}
                 format={format}
                 preferStaticMedia={prefersReducedMotion}
+              />
+            ) : item.id === "location" ? (
+              <DesktopImmersiveStorySection
+                item={item}
+                index={index}
+                scrollY={scrollY}
+                theme={theme}
+                format={format}
+                preferStaticMedia={prefersReducedMotion}
+                imageSrc={HERO_MEDIA[4] || getStoryAsset(item.id)}
+                mediaLabel="full-screen photo"
+                summary="Локация продается одной сильной панорамой и коротким комментарием: престижный район, воздух, море и близость к ключевым точкам Сочи."
+                panelAlignment="right"
               />
             ) : (
               <StorySection
@@ -1851,15 +2284,27 @@ export default function GreenmontLuxurySite() {
         ))}
 
         {FINAL_SECTIONS.map((item, index) => (
-          <StorySection
-            key={item.id}
-            item={item}
-            index={index + STORY_SECTIONS.length}
-            scrollY={scrollY}
-            theme={theme}
-            format={format}
-            preferStaticMedia={prefersReducedMotion}
-          />
+          item.id === "gallery" ? (
+            <DesktopEditorialGallerySection
+              key={item.id}
+              item={item}
+              index={index + STORY_SECTIONS.length}
+              scrollY={scrollY}
+              theme={theme}
+              format={format}
+              preferStaticMedia={prefersReducedMotion}
+            />
+          ) : (
+            <StorySection
+              key={item.id}
+              item={item}
+              index={index + STORY_SECTIONS.length}
+              scrollY={scrollY}
+              theme={theme}
+              format={format}
+              preferStaticMedia={prefersReducedMotion}
+            />
+          )
         ))}
 
         <DesktopChapterBreak chapter={DESKTOP_CHAPTER_BREAKS["final-contact"]} theme={theme} />
@@ -1888,8 +2333,8 @@ export default function GreenmontLuxurySite() {
                     text: "Подбор материалов, аргументов и медиаблоков под инвестиционный или lifestyle-запрос."
                   },
                   {
-                    title: "Конфиденциальный диалог",
-                    text: "Финальный контакт читается как discreet sales-этап, а не как обычная lead-форма."
+                    title: "Следующий шаг",
+                    text: "Ответ менеджера, сценарий показа и следующий этап диалога фиксируются как private sales process."
                   }
                 ].map((card) => (
                   <div key={card.title} className="desktop-contact-card rounded-[1.7rem] border p-5 text-sm leading-7" style={{ borderColor: theme.border, background: theme.surface, color: theme.muted }}>
@@ -1906,12 +2351,20 @@ export default function GreenmontLuxurySite() {
 
             <div className="desktop-contact-card rounded-[2.2rem] border p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] md:p-8 lg:p-9" style={{ borderColor: theme.border, background: theme.surfaceStrong }}>
               <div className="mb-6 border-b pb-5" style={{ borderColor: theme.border }}>
-                <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
-                  персональный запрос
-                </div>
-                  <div className="mt-3 text-[2rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, color: theme.text, fontStyle: theme.headingStyle, fontWeight: 400 }}>
-                    Оставьте заявку на подбор апартамента
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                    персональный запрос
                   </div>
+                  <div className="rounded-full border px-4 py-2 text-[11px] uppercase" style={{ borderColor: theme.border, background: theme.surface, color: theme.subtle, letterSpacing: theme.eyebrowSpacing }}>
+                    ответ в течение рабочего дня
+                  </div>
+                </div>
+                <div className="mt-3 text-[2rem] leading-[1]" style={{ fontFamily: theme.headingFont, letterSpacing: theme.headingSpacing, color: theme.text, fontStyle: theme.headingStyle, fontWeight: 400 }}>
+                  Оставьте заявку на подбор апартамента
+                </div>
+                <div className="mt-4 max-w-[30rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                  Вместо обычной формы здесь должен ощущаться private sales lounge: короткий запрос, персональный ответ и следующий шаг по конкретному лоту.
+                </div>
               </div>
               <div className="mb-5 grid gap-3 md:grid-cols-3">
                 {[

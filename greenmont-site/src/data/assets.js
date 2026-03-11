@@ -39,5 +39,6 @@ export const HERO_FEATURE_ASSETS = {
 
 export const VIDEO_ASSETS = {
   hero: toPath("video", "Luxury_seaside_complex_drone_reveal_delpmaspu_", "mp4"),
-  gallery: toPath("video", "gallery-loop", "mp4")
+  gallery: toPath("video", "gallery-loop", "mp4"),
+  flow: toPath("video", "Flow_delpmaspu_-2", "mp4")
 };
