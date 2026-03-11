@@ -640,6 +640,31 @@ function useIsPhoneViewport() {
   return isPhoneViewport;
 }
 
+function useIsCompactViewport() {
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const syncViewport = () => setIsCompactViewport(mediaQuery.matches);
+
+    syncViewport();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncViewport);
+      return () => mediaQuery.removeEventListener("change", syncViewport);
+    }
+
+    mediaQuery.addListener(syncViewport);
+    return () => mediaQuery.removeListener(syncViewport);
+  }, []);
+
+  return isCompactViewport;
+}
+
 function useAssetSource(src) {
   const candidates = useMemo(() => buildAssetCandidateChain(src), [src]);
   const [candidateIndex, setCandidateIndex] = useState(0);
@@ -1187,14 +1212,43 @@ function HeroMetricsPanel({ theme }) {
 
 function DesktopQuoteStorySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
   const quote = DESKTOP_QUOTE_MOMENTS[item.id];
+  const isCompactViewport = useIsCompactViewport();
 
   return (
     <>
-      <div className="lg:hidden">
-        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
-      </div>
       <section
-        id={item.id}
+        id={isCompactViewport ? item.id : undefined}
+        className="border-y py-14 lg:hidden"
+        style={{
+          background: `linear-gradient(180deg, ${theme.background} 0%, ${theme.backgroundAlt} 100%)`,
+          borderColor: theme.border
+        }}
+      >
+        <div className="mx-auto px-4">
+          <div className="rounded-[2rem] border px-5 py-8 text-center" style={{ borderColor: theme.border, background: theme.panel }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              {item.label} · {quote.label}
+            </div>
+            <div
+              className="mx-auto mt-6 max-w-[20rem] text-[2rem] leading-[0.94]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                color: theme.text,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              {quote.quote}
+            </div>
+            <div className="mx-auto mt-5 max-w-[18.5rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              {quote.note}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        id={isCompactViewport ? undefined : item.id}
         className="hidden py-32 lg:block"
         style={{
           background: `linear-gradient(180deg, ${theme.background} 0%, ${theme.backgroundAlt} 100%)`,
@@ -1244,14 +1298,63 @@ function DesktopImmersiveStorySection({
   panelAlignment = "left"
 }) {
   const asset = imageSrc || getStoryAsset(item.id);
+  const isCompactViewport = useIsCompactViewport();
 
   return (
     <>
-      <div className="lg:hidden">
-        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
-      </div>
       <section
-        id={item.id}
+        id={isCompactViewport ? item.id : undefined}
+        className="py-0 lg:hidden"
+        style={{
+          backgroundColor: theme.backgroundAlt,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mobile-media-layer relative min-h-[82svh] overflow-hidden">
+          <MediaFill
+            imageSrc={asset}
+            videoSrc={videoSrc}
+            posterSrc={posterSrc || asset}
+            gradient={item.gradient}
+            transform="scale(1.02)"
+            containerClassName="absolute inset-0"
+            mediaClassName="h-full w-full object-cover object-center"
+            preferStaticMedia={preferStaticMedia}
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.56) 100%)"
+            }}
+          />
+          <div className="absolute inset-x-4 bottom-5">
+            <div className="rounded-[1.7rem] border px-5 py-5 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
+              <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                {item.label} · {mediaLabel}
+              </div>
+              <div
+                className="mt-4 max-w-[17rem] text-[2.1rem] leading-[0.94]"
+                style={{
+                  fontFamily: theme.headingFont,
+                  letterSpacing: theme.headingSpacing,
+                  color: theme.text,
+                  fontStyle: theme.headingStyle,
+                  fontWeight: 400
+                }}
+              >
+                {item.title}
+              </div>
+              <div className="mt-4 max-w-[17rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                {summary}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        id={isCompactViewport ? undefined : item.id}
         className="hidden py-28 lg:block"
         style={{
           backgroundColor: theme.backgroundAlt,
@@ -1308,13 +1411,101 @@ function DesktopImmersiveStorySection({
 }
 
 function DesktopEditorialGallerySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
+  const isCompactViewport = useIsCompactViewport();
+
   return (
     <>
-      <div className="lg:hidden">
-        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
-      </div>
       <section
-        id={item.id}
+        id={isCompactViewport ? item.id : undefined}
+        className="border-y py-14 lg:hidden"
+        style={{
+          background: `linear-gradient(180deg, ${theme.backgroundAlt} 0%, ${theme.background} 100%)`,
+          borderColor: theme.border
+        }}
+      >
+        <div className="mx-auto px-4">
+          <div className="rounded-[1.9rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              {item.label} · premium editorial gallery
+            </div>
+            <div
+              className="mt-4 max-w-[18rem] text-[2.15rem] leading-[0.95]"
+              style={{
+                fontFamily: theme.headingFont,
+                letterSpacing: theme.headingSpacing,
+                color: theme.text,
+                fontStyle: theme.headingStyle,
+                fontWeight: 400
+              }}
+            >
+              Галерея должна быть кинематографичной и на телефоне.
+            </div>
+            <div className="mt-4 max-w-[18rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              Reel, крупный coastal-кадр и один спокойный photo-spread вместо обычной мелкой сетки.
+            </div>
+          </div>
+        </div>
+
+        <div className="mobile-media-layer relative mt-4 min-h-[74svh] overflow-hidden border-y" style={{ borderColor: theme.border }}>
+          <MediaFill
+            imageSrc={HERO_MEDIA[0]}
+            videoSrc={VIDEO_ASSETS.gallery}
+            posterSrc={HERO_MEDIA[0]}
+            gradient={item.gradient}
+            containerClassName="absolute inset-0"
+            mediaClassName="h-full w-full object-cover object-center"
+            transform="scale(1.02)"
+            preferStaticMedia={preferStaticMedia}
+          />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.52))" }} />
+          <div className="absolute bottom-0 left-0 right-0 p-5">
+            <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+              branded reel
+            </div>
+            <div className="mt-3 max-w-[15rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.8)", letterSpacing: theme.bodySpacing }}>
+              Движение, свет и shoreline-ритм без длинных пояснений.
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 px-4">
+          {[
+            {
+              title: "Private shoreline mood",
+              text: "Один сильный coastal-кадр вместо технической сетки.",
+              image: GALLERY_ASSETS[0] || HERO_MEDIA[4]
+            },
+            {
+              title: "Full-bleed photo",
+              text: "Финальный фотокадр перед private dialogue.",
+              image: GALLERY_ASSETS[1] || HERO_MEDIA[1]
+            }
+          ].map((block) => (
+            <div key={block.title} className="mobile-media-layer relative min-h-[28rem] overflow-hidden rounded-[1.8rem] border" style={{ borderColor: theme.border }}>
+              <MediaFill
+                imageSrc={block.image}
+                posterSrc={block.image}
+                gradient={item.gradient}
+                containerClassName="absolute inset-0"
+                mediaClassName="h-full w-full object-cover object-center"
+                transform="scale(1.02)"
+                preferStaticMedia={preferStaticMedia}
+              />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.48))" }} />
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+                  {block.title}
+                </div>
+                <div className="mt-2 max-w-[14rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.8)", letterSpacing: theme.bodySpacing }}>
+                  {block.text}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section
+        id={isCompactViewport ? undefined : item.id}
         className="hidden py-28 lg:block"
         style={{
           background: `linear-gradient(180deg, ${theme.backgroundAlt} 0%, ${theme.background} 100%)`,
@@ -1541,14 +1732,65 @@ function StorySection({ item, index, scrollY, theme, format, preferStaticMedia }
 function DesktopSpotlightStorySection({ item, index, scrollY, theme, format, preferStaticMedia }) {
   const spotlightMediaHeight = format.id === "gallery" ? "min-h-[84vh]" : "min-h-[78vh]";
   const asset = getStoryAsset(item.id);
+  const isCompactViewport = useIsCompactViewport();
 
   return (
     <>
-      <div className="lg:hidden">
-        <StorySection item={item} index={index} scrollY={scrollY} theme={theme} format={format} preferStaticMedia={preferStaticMedia} />
-      </div>
       <section
-        id={item.id}
+        id={isCompactViewport ? item.id : undefined}
+        className="py-0 lg:hidden"
+        style={{
+          backgroundColor: theme.backgroundAlt,
+          borderTop: `1px solid ${theme.border}`,
+          borderBottom: `1px solid ${theme.border}`
+        }}
+      >
+        <div className="mobile-media-layer relative min-h-[82svh] overflow-hidden">
+          <MediaFill
+            imageSrc={asset}
+            posterSrc={asset}
+            gradient={item.gradient}
+            transform={`scale(${1.02 + (format.mediaEmphasis - 1) * 0.18})`}
+            containerClassName="absolute inset-0"
+            mediaClassName="h-full w-full object-cover object-center"
+            preferStaticMedia={preferStaticMedia}
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.18) 40%, rgba(0,0,0,0.56))"
+            }}
+          />
+          <div className="absolute inset-x-4 bottom-5">
+            <div className="rounded-[1.7rem] border px-5 py-5 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
+              <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                {item.label} · coastline spotlight
+              </div>
+              <div
+                className="mt-4 max-w-[16rem] text-[2.1rem] leading-[0.94]"
+                style={{
+                  fontFamily: theme.headingFont,
+                  letterSpacing: theme.headingSpacing,
+                  color: theme.text,
+                  fontStyle: theme.headingStyle,
+                  fontWeight: 400
+                }}
+              >
+                {item.title}
+              </div>
+              <div className="mt-4 max-w-[16rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                {item.text}
+              </div>
+              <div className="mt-5 inline-flex rounded-full border px-4 py-2 text-[11px] uppercase" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: "0.22em" }}>
+                {item.accent}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        id={isCompactViewport ? undefined : item.id}
         className="hidden py-28 lg:block"
         style={{
           backgroundColor: theme.backgroundAlt,
