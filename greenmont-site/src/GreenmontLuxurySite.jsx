@@ -1299,43 +1299,28 @@ function DesktopImmersiveStorySection({
 }) {
   const asset = imageSrc || getStoryAsset(item.id);
   const isCompactViewport = useIsCompactViewport();
+  const isVideoMoment = Boolean(videoSrc);
 
   return (
     <>
       <section
         id={isCompactViewport ? item.id : undefined}
-        className="py-0 lg:hidden"
+        className={isVideoMoment ? "border-y py-14 lg:hidden" : "py-0 lg:hidden"}
         style={{
           backgroundColor: theme.backgroundAlt,
-          borderTop: `1px solid ${theme.border}`,
-          borderBottom: `1px solid ${theme.border}`
+          borderTop: isVideoMoment ? undefined : `1px solid ${theme.border}`,
+          borderBottom: isVideoMoment ? undefined : `1px solid ${theme.border}`,
+          borderColor: theme.border
         }}
       >
-        <div className="mobile-media-layer relative min-h-[82svh] overflow-hidden">
-          <MediaFill
-            imageSrc={asset}
-            videoSrc={videoSrc}
-            posterSrc={posterSrc || asset}
-            gradient={item.gradient}
-            transform="scale(1.02)"
-            containerClassName="absolute inset-0"
-            mediaClassName="h-full w-full object-cover object-center"
-            preferStaticMedia={preferStaticMedia}
-            priority
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.56) 100%)"
-            }}
-          />
-          <div className="absolute inset-x-4 bottom-5">
-            <div className="rounded-[1.7rem] border px-5 py-5 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
+        {isVideoMoment ? (
+          <div className="mx-auto px-4">
+            <div className="rounded-[1.9rem] border p-5" style={{ borderColor: theme.border, background: theme.surface }}>
               <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
                 {item.label} · {mediaLabel}
               </div>
               <div
-                className="mt-4 max-w-[17rem] text-[2.1rem] leading-[0.94]"
+                className="mt-4 max-w-[18rem] text-[2.15rem] leading-[0.95]"
                 style={{
                   fontFamily: theme.headingFont,
                   letterSpacing: theme.headingSpacing,
@@ -1346,12 +1331,67 @@ function DesktopImmersiveStorySection({
               >
                 {item.title}
               </div>
-              <div className="mt-4 max-w-[17rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+              <div className="mt-4 max-w-[17.5rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
                 {summary}
               </div>
             </div>
+            <div className="mobile-media-layer relative mt-4 min-h-[25rem] overflow-hidden rounded-[1.8rem] border" style={{ borderColor: theme.border }}>
+              <MediaFill
+                imageSrc={asset}
+                videoSrc={videoSrc}
+                posterSrc={posterSrc || asset}
+                gradient={item.gradient}
+                transform="scale(1.02)"
+                containerClassName="absolute inset-0"
+                mediaClassName="h-full w-full object-cover object-center"
+                preferStaticMedia={preferStaticMedia}
+                priority
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mobile-media-layer relative min-h-[82svh] overflow-hidden">
+            <MediaFill
+              imageSrc={asset}
+              videoSrc={videoSrc}
+              posterSrc={posterSrc || asset}
+              gradient={item.gradient}
+              transform="scale(1.02)"
+              containerClassName="absolute inset-0"
+              mediaClassName="h-full w-full object-cover object-center"
+              preferStaticMedia={preferStaticMedia}
+              priority
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.56) 100%)"
+              }}
+            />
+            <div className="absolute inset-x-4 bottom-5">
+              <div className="rounded-[1.7rem] border px-5 py-5 backdrop-blur-md" style={{ borderColor: theme.border, background: theme.panel }}>
+                <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+                  {item.label} · {mediaLabel}
+                </div>
+                <div
+                  className="mt-4 max-w-[17rem] text-[2.1rem] leading-[0.94]"
+                  style={{
+                    fontFamily: theme.headingFont,
+                    letterSpacing: theme.headingSpacing,
+                    color: theme.text,
+                    fontStyle: theme.headingStyle,
+                    fontWeight: 400
+                  }}
+                >
+                  {item.title}
+                </div>
+                <div className="mt-4 max-w-[17rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                  {summary}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
       <section
         id={isCompactViewport ? undefined : item.id}
@@ -1440,30 +1480,28 @@ function DesktopEditorialGallerySection({ item, index, scrollY, theme, format, p
             >
               Галерея должна быть кинематографичной и на телефоне.
             </div>
-            <div className="mt-4 max-w-[18rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
-              Reel, крупный coastal-кадр и один спокойный photo-spread вместо обычной мелкой сетки.
-            </div>
+          <div className="mt-4 max-w-[18rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
+            Reel, крупный coastal-кадр и один спокойный photo-spread вместо обычной мелкой сетки.
           </div>
         </div>
-
-        <div className="mobile-media-layer relative mt-4 min-h-[74svh] overflow-hidden border-y" style={{ borderColor: theme.border }}>
-          <MediaFill
-            imageSrc={HERO_MEDIA[0]}
-            videoSrc={VIDEO_ASSETS.gallery}
-            posterSrc={HERO_MEDIA[0]}
-            gradient={item.gradient}
-            containerClassName="absolute inset-0"
-            mediaClassName="h-full w-full object-cover object-center"
-            transform="scale(1.02)"
-            preferStaticMedia={preferStaticMedia}
-          />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.52))" }} />
-          <div className="absolute bottom-0 left-0 right-0 p-5">
-            <div className="text-[11px] uppercase" style={{ color: "#fff", letterSpacing: theme.eyebrowSpacing }}>
+          <div className="mt-4 rounded-[1.8rem] border p-4" style={{ borderColor: theme.border, background: theme.surface }}>
+            <div className="text-[11px] uppercase" style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
               branded reel
             </div>
-            <div className="mt-3 max-w-[15rem] text-sm leading-7" style={{ color: "rgba(255,255,255,0.8)", letterSpacing: theme.bodySpacing }}>
+            <div className="mt-3 max-w-[15rem] text-sm leading-7" style={{ color: theme.muted, letterSpacing: theme.bodySpacing }}>
               Движение, свет и shoreline-ритм без длинных пояснений.
+            </div>
+            <div className="mobile-media-layer relative mt-4 min-h-[24rem] overflow-hidden rounded-[1.4rem] border" style={{ borderColor: theme.border }}>
+              <MediaFill
+                imageSrc={HERO_MEDIA[0]}
+                videoSrc={VIDEO_ASSETS.gallery}
+                posterSrc={HERO_MEDIA[0]}
+                gradient={item.gradient}
+                containerClassName="absolute inset-0"
+                mediaClassName="h-full w-full object-cover object-center"
+                transform="scale(1.02)"
+                preferStaticMedia={preferStaticMedia}
+              />
             </div>
           </div>
         </div>
