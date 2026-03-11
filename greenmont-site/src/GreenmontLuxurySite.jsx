@@ -922,7 +922,7 @@ function StoryHeader({ item, theme, format }) {
   return (
     <div className={`${format.maxTextWidth} min-w-0 max-w-full`}>
       <div
-        className="flex flex-wrap items-center gap-4 text-[11px] uppercase"
+        className="story-eyebrow flex flex-wrap items-center gap-4 text-[11px] uppercase"
         style={{ color: theme.accent, letterSpacing: theme.eyebrowSpacing }}
       >
         <span>{item.label}</span>
@@ -930,7 +930,7 @@ function StoryHeader({ item, theme, format }) {
         <span>{item.eyebrow}</span>
       </div>
       <h2
-        className="mt-5 max-w-full text-[2.7rem] leading-[0.92] [overflow-wrap:anywhere] md:text-[4.1rem] xl:text-[5rem]"
+        className="story-heading mt-5 max-w-full text-[2.7rem] leading-[0.92] [overflow-wrap:anywhere] md:text-[4.1rem] xl:text-[5rem]"
         style={{
           fontFamily: theme.headingFont,
           letterSpacing: theme.headingSpacing,
@@ -942,13 +942,13 @@ function StoryHeader({ item, theme, format }) {
         {item.title}
       </h2>
       <div
-        className="mt-8 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]"
+        className="story-copy mt-8 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]"
         style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}
       >
         {item.text}
       </div>
       <div
-        className="mt-7 inline-flex max-w-full flex-wrap rounded-full border px-4 py-2 text-[12px] uppercase leading-6 [overflow-wrap:anywhere]"
+        className="mobile-pill mt-7 inline-flex max-w-full flex-wrap rounded-full border px-4 py-2 text-[12px] uppercase leading-6 [overflow-wrap:anywhere]"
         style={{
           borderColor: theme.accent,
           background: theme.accentSoft,
@@ -1012,7 +1012,7 @@ function StorySection({ item, index, scrollY, theme, format, preferStaticMedia }
   return (
     <section
       id={item.id}
-      className="py-20 lg:py-28"
+      className="py-16 lg:py-28"
       style={{
         backgroundColor: sectionBackground,
         borderTop: index % 3 === 1 ? `1px solid ${theme.border}` : "none",
@@ -1079,7 +1079,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
   return (
     <section
       id={item.id}
-      className="py-[4.5rem] lg:py-[5.5rem]"
+      className="py-16 lg:py-[5.5rem]"
       style={{
         backgroundColor: index % 2 === 0 ? theme.backgroundAlt : theme.background,
         borderTop: index % 2 === 0 ? `1px solid ${theme.border}` : "none",
@@ -1098,7 +1098,7 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
               </span>
             </div>
             <h3
-              className="mt-5 max-w-full text-[2.4rem] leading-[0.94] [overflow-wrap:anywhere] md:text-[3.5rem] xl:text-[4.2rem]"
+              className="apartment-heading mt-5 max-w-full text-[2.4rem] leading-[0.94] [overflow-wrap:anywhere] md:text-[3.5rem] xl:text-[4.2rem]"
               style={{
                 fontFamily: theme.headingFont,
                 letterSpacing: theme.headingSpacing,
@@ -1109,14 +1109,14 @@ function ApartmentSection({ item, index, scrollY, theme, format, preferStaticMed
             >
               {item.title}
             </h3>
-            <div className="mt-7 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]" style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
+            <div className="story-copy mt-7 max-w-full border-l pl-6 text-base leading-8 [overflow-wrap:anywhere]" style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
               {item.text}
             </div>
             <div className={`mt-7 grid gap-3 ${format.id === "catalog" ? "sm:grid-cols-2" : "grid-cols-1"}`}>
               {specs.map((spec) => (
                 <div
                   key={spec.label}
-                  className="max-w-full rounded-full border px-4 py-2 text-[12px] uppercase [overflow-wrap:anywhere]"
+                  className="mobile-pill max-w-full rounded-full border px-4 py-2 text-[12px] uppercase [overflow-wrap:anywhere]"
                   style={{
                     borderColor: theme.accent,
                     background: theme.accentSoft,
@@ -1307,6 +1307,59 @@ export default function GreenmontLuxurySite() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Prata&family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Marcellus&family=Tenor+Sans&display=swap');
         html { scroll-behavior: smooth; }
+        @media (max-width: 430px) {
+          .story-heading {
+            font-size: 2.2rem !important;
+            line-height: 0.96 !important;
+          }
+          .apartment-heading {
+            font-size: 2rem !important;
+            line-height: 0.98 !important;
+          }
+          .story-copy {
+            font-size: 0.95rem !important;
+            line-height: 1.8 !important;
+          }
+          .story-eyebrow {
+            gap: 0.65rem !important;
+          }
+          .mobile-pill {
+            padding: 0.55rem 0.9rem !important;
+            font-size: 0.7rem !important;
+            line-height: 1.45 !important;
+            letter-spacing: 0.12em !important;
+          }
+          .hero-chip {
+            max-width: calc(100vw - 3rem);
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.625rem !important;
+            line-height: 1.45 !important;
+            letter-spacing: 0.16em !important;
+          }
+          .hero-eyebrow {
+            margin-bottom: 1.25rem !important;
+            gap: 0.75rem !important;
+            letter-spacing: 0.22em !important;
+          }
+          .hero-heading {
+            font-size: 2.55rem !important;
+            line-height: 0.9 !important;
+          }
+          .hero-copy {
+            margin-top: 1.5rem !important;
+            padding-left: 1rem !important;
+            font-size: 0.95rem !important;
+            line-height: 1.75 !important;
+          }
+          .hero-cta-row {
+            margin-top: 1.75rem !important;
+            gap: 0.75rem !important;
+          }
+          .hero-cta {
+            padding: 0.8rem 1rem !important;
+            font-size: 0.82rem !important;
+          }
+        }
       `}</style>
 
       <div
@@ -1383,7 +1436,7 @@ export default function GreenmontLuxurySite() {
 
           <div className={`relative z-10 mx-auto flex ${format.heroMinHeight} max-w-[1600px] flex-col justify-between px-6 pb-10 pt-24 lg:px-10 lg:pb-14 lg:pt-28`}>
             <div className="flex items-start justify-between gap-6">
-              <div className="rounded-full border px-4 py-2 text-[11px] uppercase backdrop-blur-md" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
+              <div className="hero-chip rounded-full border px-4 py-2 text-[11px] uppercase backdrop-blur-md" style={{ borderColor: theme.accent, background: theme.accentSoft, color: theme.accent, letterSpacing: theme.eyebrowSpacing }}>
                 Сочи · private resort · 8 апартаментов в продаже
               </div>
               <div className="hidden items-center gap-3 text-[11px] uppercase lg:flex" style={{ color: theme.subtle, letterSpacing: "0.36em" }}>
@@ -1394,12 +1447,12 @@ export default function GreenmontLuxurySite() {
 
             <div className={`grid items-end gap-10 pb-6 pt-16 ${format.id === "gallery" ? "lg:grid-cols-[0.9fr_1.1fr]" : "lg:grid-cols-[1.08fr_0.92fr]"} lg:pt-20`}>
               <div>
-                <div className="mb-8 flex items-center gap-4 text-[11px] uppercase" style={{ color: theme.subtle, letterSpacing: "0.35em" }}>
+                <div className="hero-eyebrow mb-8 flex items-center gap-4 text-[11px] uppercase" style={{ color: theme.subtle, letterSpacing: "0.35em" }}>
                   <span>премиальная недвижимость у моря</span>
                   <span className="h-px w-20" style={{ backgroundColor: theme.accent }} />
                 </div>
                 <h1
-                  className={`max-w-5xl ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6.2rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[7rem]"} leading-[0.88]`}
+                  className={`hero-heading max-w-5xl ${format.id === "catalog" ? "text-[2.9rem] md:text-[4.8rem] xl:text-[6.2rem]" : "text-[3.15rem] md:text-[5.4rem] xl:text-[7rem]"} leading-[0.88]`}
                   style={{
                     fontFamily: theme.headingFont,
                     letterSpacing: theme.headingSpacing,
@@ -1414,13 +1467,13 @@ export default function GreenmontLuxurySite() {
                   <br />
                   в Сочи
                 </h1>
-                <div className={`mt-8 ${format.maxTextWidth} border-l pl-6 text-[15px] font-medium leading-8 md:text-[18px]`} style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
+                <div className={`hero-copy mt-8 ${format.maxTextWidth} border-l pl-6 text-[15px] font-medium leading-8 md:text-[18px]`} style={{ borderColor: theme.accent, color: theme.muted, letterSpacing: theme.bodySpacing }}>
                   История сайта разворачивается как длинный cinematic-scroll: сначала масштаб проекта, затем ритм у моря, сервис, технологии, команда, локация и в финале — 8 апартаментов, которые мы продаем сейчас.
                 </div>
-                <div className="mt-10 flex flex-wrap gap-4">
+                <div className="hero-cta-row mt-10 flex flex-wrap gap-4">
                   <a
                     href="#apartment-01"
-                    className="rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
+                    className="hero-cta rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition hover:translate-y-[-1px]"
                     style={{
                       backgroundColor: theme.accent,
                       color: theme.buttonText,
@@ -1431,7 +1484,7 @@ export default function GreenmontLuxurySite() {
                   </a>
                   <a
                     href="#final-contact"
-                    className="rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    className="hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
                     style={{ borderColor: theme.border, background: theme.surface, color: theme.text }}
                   >
                     Запросить персональную презентацию
@@ -1445,7 +1498,7 @@ export default function GreenmontLuxurySite() {
                       setIsNavOpen(false);
                       setIsSettingsOpen(true);
                     }}
-                    className="rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
+                    className="hero-cta rounded-full border px-7 py-3.5 text-sm font-semibold tracking-[0.05em] transition"
                     style={{ borderColor: theme.border, background: theme.panel, color: theme.text }}
                   >
                     Настроить вид
