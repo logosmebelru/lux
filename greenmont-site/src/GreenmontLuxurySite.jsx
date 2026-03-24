@@ -716,7 +716,7 @@ const HERO_ASSETS = {
 
 const STORY_ASSET_OVERRIDES = {
   metrics: HERO_MEDIA[5] ?? pickFromList(HERO_MEDIA, 5),
-  concept: HERO_MEDIA[3] ?? pickFromList(HERO_MEDIA, 3),
+  concept: STORY_MEDIA[2] ?? HERO_MEDIA[3] ?? pickFromList(HERO_MEDIA, 3),
   "private-resort": HERO_MEDIA[1] ?? pickFromList(HERO_MEDIA, 1),
   promenade: HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0),
   beach: GALLERY_ASSETS[0] ?? pickFromList(GALLERY_ASSETS, 0),

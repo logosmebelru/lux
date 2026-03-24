@@ -2,7 +2,7 @@ export const MEDIA_BASE = "/media";
 
 const heroExt = ["png", "png", "png", "jpeg", "png", "png"];
 const storyExt = [
-  "png", "png", "png", "png", "png", "jpeg", "jpeg", "jpeg", "png", "png",
+  "png", "png", "jpg", "png", "png", "jpeg", "jpeg", "jpeg", "png", "png",
   "png", "png", "png", "png", "png", "png", "png", "png", "png", "png",
   "png", "png", "png", "png", "png", "png", "png", "jpeg", "jpeg", "png",
   "png", "png", "png", "png", "jpeg", "png", "png", "png", "png", "jpeg",
