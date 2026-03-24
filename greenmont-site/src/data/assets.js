@@ -33,6 +33,13 @@ export const GALLERY_ASSETS = galleryExt.map((ext, index) =>
   toPath("gallery", `gallery-${String(index + 1).padStart(2, "0")}`, ext)
 );
 
+export const CURATED_STORY_ASSETS = {
+  privateResort: toPath("story", "private-resort-20260324", "jpg"),
+  bridges: toPath("story", "bridges-night-20260324", "jpg"),
+  artPark: toPath("story", "art-park-20260324", "jpg"),
+  eveningLight: toPath("story", "evening-light-20260324", "jpg")
+};
+
 export const HERO_FEATURE_ASSETS = {
   mobile: toPath("hero", "______4k_delpmaspu-5", "png")
 };

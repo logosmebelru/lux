@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   APARTMENT_ASSETS as APARTMENT_MEDIA,
+  CURATED_STORY_ASSETS,
   GALLERY_ASSETS,
   HERO_ASSETS as HERO_MEDIA,
   HERO_FEATURE_ASSETS,
@@ -717,13 +718,25 @@ const HERO_ASSETS = {
 const STORY_ASSET_OVERRIDES = {
   metrics: HERO_MEDIA[5] ?? pickFromList(HERO_MEDIA, 5),
   concept: STORY_MEDIA[2] ?? HERO_MEDIA[3] ?? pickFromList(HERO_MEDIA, 3),
-  "private-resort": HERO_MEDIA[1] ?? pickFromList(HERO_MEDIA, 1),
+  "private-resort":
+    CURATED_STORY_ASSETS.privateResort ??
+    HERO_MEDIA[1] ??
+    pickFromList(HERO_MEDIA, 1),
   promenade: HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0),
   beach: GALLERY_ASSETS[0] ?? pickFromList(GALLERY_ASSETS, 0),
-  bridges: HERO_MEDIA[4] ?? pickFromList(HERO_MEDIA, 4),
+  bridges:
+    CURATED_STORY_ASSETS.bridges ??
+    HERO_MEDIA[4] ??
+    pickFromList(HERO_MEDIA, 4),
   "five-senses": GALLERY_ASSETS[1] ?? pickFromList(GALLERY_ASSETS, 1),
-  "art-park": HERO_MEDIA[2] ?? pickFromList(HERO_MEDIA, 2),
-  "evening-light": HERO_MEDIA[0] ?? pickFromList(HERO_MEDIA, 0)
+  "art-park":
+    CURATED_STORY_ASSETS.artPark ??
+    HERO_MEDIA[2] ??
+    pickFromList(HERO_MEDIA, 2),
+  "evening-light":
+    CURATED_STORY_ASSETS.eveningLight ??
+    HERO_MEDIA[0] ??
+    pickFromList(HERO_MEDIA, 0)
 };
 
 const STORY_ASSET_MAP = STORY_SECTION_IDS.reduce((accumulator, id, index) => {
